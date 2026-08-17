@@ -1,0 +1,16 @@
+collab 1
+title "Rain Gauge — AO Collaboration"
+
+# Active Objects
+ao BucketSensorAO
+ao ControlAO
+
+# BucketSensorAO recognises valid bucket behaviour and reports semantic
+# results and local readiness to the system coordinator.
+collaboration BucketSensorAO ControlAO
+  BucketSensorAO -> ControlAO
+    BUCKET_TIPPED
+    BUCKET_SENSOR_BUSY
+    BUCKET_SENSOR_IDLE
+    RAIN_BUCKET_FAULT
+end
