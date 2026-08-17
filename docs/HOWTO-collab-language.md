@@ -67,7 +67,7 @@ Every file should begin with:
 collab 1
 ```
 
-Version 1 is the initial language defined by ADR-0002 and the Rain Gauge work.
+Version 1 is the initial language defined by ADR-0001 and the Rain Gauge work.
 
 A title is strongly recommended:
 
