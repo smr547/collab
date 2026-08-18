@@ -101,7 +101,10 @@ def parse_model(path: Path) -> Model:
 
     seen_aos = set()
     seen_pairs = set()
-    seen_signals = {}
+    # Signal identity is receiver-centric. The same semantic signal may arrive
+    # at one receiver over multiple routes, but reusing the same name for a
+    # different receiver is rejected (ADR-0003).
+    seen_signals = {}  # signal -> (receiver, first_line)
 
     lines = path.read_text(encoding="utf-8").splitlines()
 
@@ -241,13 +244,24 @@ def parse_model(path: Path) -> Model:
                 f"{path}:{idx}: invalid signal name '{signal}'; "
                 "use UPPER_SNAKE_CASE"
             )
-        if signal in seen_signals:
-            prev = seen_signals[signal]
+        if signal in current_flow.signals:
             raise ModelError(
-                f"{path}:{idx}: duplicate signal '{signal}' "
-                f"(first declared at line {prev})"
+                f"{path}:{idx}: duplicate signal '{signal}' in flow "
+                f"{current_flow.sender}->{current_flow.receiver}"
             )
-        seen_signals[signal] = idx
+
+        if signal in seen_signals:
+            receiver, first_line = seen_signals[signal]
+            if receiver != current_flow.receiver:
+                raise ModelError(
+                    f"{path}:{idx}: signal '{signal}' is already defined "
+                    f"for receiver '{receiver}' at line {first_line}; "
+                    f"cannot also use it for receiver "
+                    f"'{current_flow.receiver}'"
+                )
+        else:
+            seen_signals[signal] = (current_flow.receiver, idx)
+
         current_flow.signals.append(signal)
 
         if signal in GENERIC_STATUS_SIGNALS:
@@ -324,13 +338,32 @@ def all_signals(model: Model):
                 yield sig, flow.sender, flow.receiver
 
 
+def unique_signals(model: Model):
+    """Yield each semantic signal once, in first-seen order.
+
+    Each item is (signal_name, routes), where routes is a list of
+    (sender, receiver) tuples. A repeated signal is therefore one enum
+    identity with multiple collaboration routes.
+    """
+    signals = {}
+    for sig, sender, receiver in all_signals(model):
+        if sig not in signals:
+            signals[sig] = []
+        route = (sender, receiver)
+        if route not in signals[sig]:
+            signals[sig].append(route)
+
+    for sig, routes in signals.items():
+        yield sig, routes
+
+
 def generate_signals_hpp(
     model: Model,
     source_name: str,
     enum_name: str,
     max_signal: str,
 ) -> str:
-    signals = list(all_signals(model))
+    signals = list(unique_signals(model))
     out = [
         "#pragma once",
         "",
@@ -342,12 +375,20 @@ def generate_signals_hpp(
         f"enum {enum_name} {{",
     ]
 
-    for i, (sig, sender, receiver) in enumerate(signals):
+    for i, (sig, routes) in enumerate(signals):
         init = " = QP::Q_USER_SIG" if i == 0 else ""
-        out.append(
-            f"    {sig}_SIG{init},"
-            f"  // {sender} -> {receiver}"
-        )
+
+        if len(routes) == 1:
+            sender, receiver = routes[0]
+            out.append(
+                f"    {sig}_SIG{init},"
+                f"  // {sender} -> {receiver}"
+            )
+        else:
+            out.append("    // routes:")
+            for sender, receiver in routes:
+                out.append(f"    //   {sender} -> {receiver}")
+            out.append(f"    {sig}_SIG{init},")
 
     out.append("")
     out.append(f"    {max_signal}")
@@ -413,7 +454,7 @@ def main() -> int:
     print(
         f"OK: {len(model.aos)} AO(s), "
         f"{len(model.collaborations)} collaboration(s), "
-        f"{sum(1 for _ in all_signals(model))} signal(s)"
+        f"{sum(1 for _ in unique_signals(model))} signal(s)"
     )
 
     if args.check:
