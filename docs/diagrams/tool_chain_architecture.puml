@@ -1,0 +1,92 @@
+@startuml
+title Model-Driven Application Toolchain
+
+left to right direction
+skinparam linetype ortho
+
+package "Authoritative System Models" {
+    artifact "system.collab\nSystem collaboration model" as COLLAB
+    artifact "system.qm\nExecutable application model" as QMFILE
+}
+
+package "QM Contents" {
+    component "BucketSensorAO HSM" as BSHSM
+    component "ControlAO HSM" as CHSM
+    component "RadioAO HSM" as RHSM
+    component "Other QM artefacts" as QOTHER
+}
+
+QMFILE ..> BSHSM : contains
+QMFILE ..> CHSM  : contains
+QMFILE ..> RHSM  : contains
+QMFILE ..> QOTHER : contains
+
+package "Model Readers / Common Semantic Model" {
+    component ".collab reader" as CR
+    component "QM reader" as QR
+    component "Common Semantic Model" as MODEL
+}
+
+COLLAB --> CR
+QMFILE --> QR
+
+CR --> MODEL
+QR --> MODEL
+
+package "Tools" {
+    component "collabc" as CC
+    component "QM" as QM
+    component "qm2puml" as Q2P
+    component "signalgen" as SG
+    component "sttgen / sttcheck" as STTG
+    component "modelcheck" as MC
+    component "PlantUML" as PUML
+}
+
+package "Derived Artefacts" {
+    artifact "system-collaboration.puml" as CP
+    artifact "system-collaboration.svg" as CS
+
+    artifact "BucketSensorAO.puml" as BP
+    artifact "ControlAO.puml" as CHP
+    artifact "RadioAO.puml" as RP
+
+    artifact "AO HSM SVGs" as HSV
+    artifact "signals.hpp" as SIG
+    artifact "State Transition Tables" as STT
+    artifact "Completeness /\nConsistency Reports" as REPORT
+    artifact "Generated C++" as CPP
+}
+
+' Collaboration rendering
+COLLAB --> CC
+CC --> CP
+CP --> PUML
+PUML --> CS
+
+' Executable implementation
+QMFILE --> QM
+QM --> CPP
+
+' HSM extraction
+QMFILE --> Q2P
+Q2P --> BP
+Q2P --> CHP
+Q2P --> RP
+
+BP --> PUML
+CHP --> PUML
+RP --> PUML
+PUML --> HSV
+
+' Integrated analysis
+MODEL --> SG
+SG --> SIG
+
+MODEL --> STTG
+STTG --> STT
+
+MODEL --> MC
+MC --> REPORT
+
+@enduml
