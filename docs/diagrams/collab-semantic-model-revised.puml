@@ -1,0 +1,129 @@
+@startuml
+title collab Semantic Model — Revised Draft
+
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Participant {
+  +name
+  +kind : ParticipantKind
+  +multiplicity
+}
+
+enum ParticipantKind {
+  AO
+  HSM
+  ISR
+  TIMER
+}
+
+class Collaboration {
+  +isReflexive : Boolean <<derived>>
+}
+
+class Route {
+  +origin : Participant
+  +destination : Participant
+}
+
+class EventFlow {
+}
+
+class Signal {
+  +name
+}
+
+abstract class Delivery
+
+class PostDelivery {
+  +queueOrder : QueueOrder
+}
+
+class PublishSubscribeDelivery
+class DispatchDelivery
+
+enum QueueOrder {
+  FIFO
+  LIFO
+}
+
+' Reflexive many-to-many Participant association with Collaboration as association class.
+Participant "0..*" -- "0..*" Participant : collaborates with
+(Participant, Participant) .. Collaboration
+
+' A collaboration is made concrete by one or more directional routes.
+Collaboration "1" *-- "1..*" Route : routes
+
+' Route direction is explicit.
+Participant "1" <-- "0..*" Route : origin
+Participant "1" <-- "0..*" Route : destination
+
+' One route may carry one or more event flows.
+Route "1" *-- "1..*" EventFlow : eventFlows
+
+' Each event flow identifies one signal and one delivery mechanism.
+Signal "1" <-- "0..*" EventFlow : signal
+Delivery "1" <-- "0..*" EventFlow : delivery
+
+Delivery <|-- PostDelivery
+Delivery <|-- PublishSubscribeDelivery
+Delivery <|-- DispatchDelivery
+
+PostDelivery --> QueueOrder
+
+note right of Participant
+A Participant is a semantic system role/classifier.
+
+Multiplicity records the anticipated runtime
+population represented by that participant.
+end note
+
+note top of Collaboration
+Collaboration is the association class for the
+reflexive "collaborates with" relationship.
+
+For participants P1 and P2:
+  Collaboration(P1,P2) = Collaboration(P2,P1)
+
+isReflexive is derived:
+  true  when P1 = P2
+  false when P1 != P2
+end note
+
+note bottom of Route
+A Route is a directional path from an origin
+Participant to a destination Participant.
+
+Therefore:
+  Route(P1 -> P2) != Route(P2 -> P1)
+
+A binary Collaboration can contain routes in
+either or both directions.
+
+A reflexive Collaboration contains route(s)
+whose origin and destination are the same
+Participant.
+end note
+
+note bottom of EventFlow
+An EventFlow is the use of a Signal over a Route
+with a particular Delivery mechanism.
+
+The runtime object travelling is an Event;
+its Signal identifies the event's semantic type.
+end note
+
+note right of Delivery
+POST
+  queued delivery to an Active Object
+  queue order may be FIFO or LIFO
+
+PUBLISH_SUBSCRIBE
+  publisher-to-subscriber delivery via QP
+
+DISPATCH
+  synchronous delivery to a passive HSM
+end note
+
+@enduml

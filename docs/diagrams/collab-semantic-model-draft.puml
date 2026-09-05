@@ -1,0 +1,78 @@
+@startuml
+title collab Semantic Model — Draft
+
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Participant {
+  +name
+  +kind : ParticipantKind
+  +multiplicity
+}
+
+enum ParticipantKind {
+  AO
+  HSM
+  ISR
+  TIMER
+}
+
+class Collaboration {
+}
+
+class Route {
+  +source : Participant
+  +destination : Participant
+}
+
+class Signal {
+  +name
+}
+
+abstract class Delivery
+
+class PostDelivery {
+  +queueOrder : QueueOrder
+}
+
+class PublishSubscribeDelivery
+class DispatchDelivery
+
+enum QueueOrder {
+  FIFO
+  LIFO
+}
+
+Participant "2" -- "0..*" Collaboration : participants
+Collaboration "1" *-- "1..*" Route : routes
+
+Participant "1" <-- "0..*" Route : source
+Participant "1" <-- "0..*" Route : destination
+
+Signal "1" <-- "1..*" Route : signal
+Delivery "1" <-- "1..*" Route : delivery
+
+Delivery <|-- PostDelivery
+Delivery <|-- PublishSubscribeDelivery
+Delivery <|-- DispatchDelivery
+
+PostDelivery --> QueueOrder
+
+note right of Participant
+A Participant is a semantic system role/classifier.
+Multiplicity records the anticipated runtime population.
+end note
+
+note bottom of Route
+Delivery semantics belong to each Route,
+not to Signal identity.
+end note
+
+note right of Delivery
+POST is queued delivery to an AO.
+PUBLISH/SUBSCRIBE is framework-routed delivery.
+DISPATCH is synchronous delivery to a passive HSM.
+end note
+
+@enduml
