@@ -328,7 +328,7 @@ def generate_puml(model: Model, source_name: str) -> str:
     for ao in model.aos:
         if model.roles.get(ao) == "TIMER":
             # Clock glyph is presentation only; cadence is descriptive, not executable.
-            label = f"◷ {ao}"
+            label = f"◷ <b>{ao}</b>"
             if ao in model.timer_cadences:
                 cadence = model.timer_cadences[ao].replace('"', "'").replace("\\n", " ")
                 label += f"\\n{cadence}"
