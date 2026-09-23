@@ -66,6 +66,7 @@ class Model:
     version: int = 1
     title: str = "AO Collaboration"
     aos: List[str] = field(default_factory=list)
+    roles: dict[str, str] = field(default_factory=dict)
     collaborations: List[Collaboration] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
 
@@ -138,22 +139,19 @@ def parse_model(path: Path) -> Model:
                 model.title = " ".join(parts[1:])
                 continue
 
-            if stripped.startswith("ao "):
+            if stripped.startswith(("ao ", "isr ")):
                 parts = stripped.split()
                 if len(parts) != 2:
-                    raise ModelError(f"{path}:{idx}: expected 'ao <AOName>'")
+                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>' or 'isr <Name>'")
+                role = parts[0].upper()
                 name = parts[1]
                 if not AO_RE.match(name):
-                    raise ModelError(f"{path}:{idx}: invalid AO name '{name}'")
+                    raise ModelError(f"{path}:{idx}: invalid participant name '{name}'")
                 if name in seen_aos:
-                    raise ModelError(f"{path}:{idx}: duplicate AO '{name}'")
+                    raise ModelError(f"{path}:{idx}: duplicate participant '{name}'")
                 seen_aos.add(name)
                 model.aos.append(name)
-                if not name.endswith("AO"):
-                    model.warnings.append(
-                        f"{path}:{idx}: AO '{name}' does not end in 'AO' "
-                        "(house convention)"
-                    )
+                model.roles[name] = role
                 continue
 
             if stripped.startswith("collaboration "):
@@ -161,7 +159,7 @@ def parse_model(path: Path) -> Model:
                 if len(parts) != 3:
                     raise ModelError(
                         f"{path}:{idx}: expected "
-                        "'collaboration <AO1> <AO2>'"
+                        "'collaboration <Participant1> <Participant2>'"
                     )
                 a, b = parts[1], parts[2]
                 if a == b:
@@ -171,7 +169,7 @@ def parse_model(path: Path) -> Model:
                 for name in (a, b):
                     if name not in seen_aos:
                         raise ModelError(
-                            f"{path}:{idx}: AO '{name}' has not been declared"
+                            f"{path}:{idx}: participant '{name}' has not been declared"
                         )
                 pair = tuple(sorted((a, b)))
                 if pair in seen_pairs:
@@ -277,7 +275,7 @@ def parse_model(path: Path) -> Model:
         )
 
     if not model.aos:
-        raise ModelError(f"{path}: no AOs declared")
+        raise ModelError(f"{path}: no participants declared")
     if not model.collaborations:
         raise ModelError(f"{path}: no collaborations declared")
 
@@ -309,7 +307,7 @@ def generate_puml(model: Model, source_name: str) -> str:
     ]
 
     for ao in model.aos:
-        out.append(f'component "{ao}" as {ao}')
+        out.append(f'component "{ao}" as {ao} <<{model.roles.get(ao, "AO")}>>')
 
     out.append("")
 
@@ -452,7 +450,7 @@ def main() -> int:
         return 3
 
     print(
-        f"OK: {len(model.aos)} AO(s), "
+        f"OK: {len(model.aos)} participant(s), "
         f"{len(model.collaborations)} collaboration(s), "
         f"{sum(1 for _ in unique_signals(model))} signal(s)"
     )
