@@ -146,9 +146,9 @@ def parse_model(path: Path) -> Model:
                 role = parts[0].upper()
                 name = parts[1]
                 if not AO_RE.match(name):
-                    raise ModelError(f"{path}:{idx}: invalid AO name '{name}'")
+                    raise ModelError(f"{path}:{idx}: invalid participant name '{name}'")
                 if name in seen_aos:
-                    raise ModelError(f"{path}:{idx}: duplicate AO '{name}'")
+                    raise ModelError(f"{path}:{idx}: duplicate participant '{name}'")
                 seen_aos.add(name)
                 model.aos.append(name)
                 model.roles[name] = role
@@ -159,7 +159,7 @@ def parse_model(path: Path) -> Model:
                 if len(parts) != 3:
                     raise ModelError(
                         f"{path}:{idx}: expected "
-                        "'collaboration <AO1> <AO2>'"
+                        "'collaboration <Participant1> <Participant2>'"
                     )
                 a, b = parts[1], parts[2]
                 if a == b:
@@ -169,7 +169,7 @@ def parse_model(path: Path) -> Model:
                 for name in (a, b):
                     if name not in seen_aos:
                         raise ModelError(
-                            f"{path}:{idx}: AO '{name}' has not been declared"
+                            f"{path}:{idx}: participant '{name}' has not been declared"
                         )
                 pair = tuple(sorted((a, b)))
                 if pair in seen_pairs:
