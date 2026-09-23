@@ -46,7 +46,7 @@ end
         self.assertEqual(model.warnings, [])
 
     def test_duplicate_name_across_roles_is_rejected(self):
-        with self.assertRaisesRegex(collabc.ModelError, "duplicate AO"):
+        with self.assertRaisesRegex(collabc.ModelError, "duplicate participant"):
             self.parse("""collab 1
 ao TippingBucket
 isr TippingBucket
