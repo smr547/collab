@@ -44,7 +44,7 @@ class TimerTests(unittest.TestCase):
 
     def test_duplicate_timer_name(self):
         with self.assertRaisesRegex(ModelError, "duplicate participant"):
-            self.parse('collab 1\\nao Control\\ntimer Control\\n')
+            self.parse('collab 1\nao Control\ntimer Control\n')
 
 
 if __name__ == "__main__":
