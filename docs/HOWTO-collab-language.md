@@ -499,3 +499,25 @@ The generated C++ signal catalogue is the bridge between these modelling levels.
 A useful working principle is:
 
 > **State machines describe behaviour within an object. Signals describe contracts between objects.**
+
+---
+
+## Timer participants (proposed extension)
+
+A timer may be declared as a named event source with optional **human-readable** cadence:
+
+```text
+timer SleepTimer "One-shot; inactivity interval"
+timer HealthTimer "Periodic; health-report interval"
+```
+
+Timers use ordinary collaborations and signals:
+
+```text
+collaboration SleepTimer Control
+  SleepTimer -> Control
+    CONSIDER_SLEEPING
+end
+```
+
+The generated PlantUML labels timer participants with a small clock glyph and the optional cadence. The cadence is documentation, not a parsed duration or executable scheduling rule. No QP timer creation, arming, disarming, deep-sleep wake handling or QM behaviour is generated. See `examples/timers.collab`.
