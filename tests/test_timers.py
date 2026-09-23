@@ -27,7 +27,7 @@ class TimerTests(unittest.TestCase):
         self.assertEqual(model.roles["SleepTimer"], "TIMER")
         self.assertEqual(model.timer_cadences["SleepTimer"], "One-shot; inactivity interval")
         puml = generate_puml(model, "timers.collab")
-        self.assertIn('component "◷ SleepTimer\\nOne-shot; inactivity interval" as SleepTimer <<TIMER>>', puml)
+        self.assertIn('component "◷ <b>SleepTimer</b>\\nOne-shot; inactivity interval" as SleepTimer <<TIMER>>', puml)
         self.assertIn("SleepTimer --> Control", puml)
         self.assertIn("CONSIDER_SLEEPING_SIG", generate_signals_hpp(model, "timers.collab", "AppSignals", "MAX_APP_SIG"))
 
