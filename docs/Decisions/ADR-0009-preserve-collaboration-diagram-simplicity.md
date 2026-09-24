@@ -48,7 +48,7 @@ The diagram must not duplicate the timer's behavioural implementation in QM. The
 
 ## Relationship to QM
 
-`collab` describes system-level communication contracts; QM owns internal HSM behaviour, states, transitions and actions. The primary collaboration diagram complements, rather than reproduces, the individual HSM diagrams.
+`collab` describes system-level communication contracts; QM owns their implementation, including internal HSM behaviour, states, transitions and actions, as well as the specifics of inter-object collaboration. The primary collaboration diagram complements, rather than reproduces, the individual HSM diagrams.
 
 ## Validation Against Applications
 
@@ -82,6 +82,18 @@ The collaboration source may be elaborated incrementally: a system architect def
 
 Generate one authoritative application signal enumeration from that complete inventory. QM-generated code shall use it rather than maintain a competing independently ordered enumeration. Framework-reserved signals remain distinct. The Rain Gauge build failure caused by `CONSIDER_SLEEPING_SIG` being present in the Collab-generated header but absent from the QM-owned enumeration demonstrates why this matters.
 
+## Bidirectional Signal and Event Contract Validation
+
+Every application signal shall be declared in the complete collaboration specification, including signals local to one HSM. Every declared signal shall have an accounted-for implementation, and every implementation use of an application signal shall be traceable to its declaration. Validation must reconcile Collab and QM in both directions so that neither an unimplemented architectural signal nor an undeclared implementation signal can silently escape detection.
+
+A signal's presence in the generated enumeration is necessary but not sufficient. For each declared event-generation and delivery route, cross-model validation should establish the applicable implementation obligations: an event object with the intended signal; the appropriate creation or allocation mechanism (including static events, dynamically allocated events and framework-owned time events); a matching POST, PUBLISH or DISPATCH operation, including ISR-safe variants where required; and a receiving HSM path that handles the signal. Where relevant, checks should cover event type, payload, pool configuration, destination and lifecycle. A signal shared by multiple routes must be checked in each declared context rather than treated as fulfilled by one occurrence.
+
+The validator should report missing or inconsistent ingredients as actionable errors, while distinguishing proven static properties from runtime behaviour that cannot be established statically. Explicitly modelled external or intentionally deferred obligations may require a documented exception rather than silently disappearing from coverage.
+
+This addresses a practical limitation of QM-based development: implementing an event interaction requires several coordinated declarations and operations. QM's semantic checks and the C++ compiler do not, by themselves, establish that a required event was posted or that a declared signal has a receiving path. Such omissions can compile successfully and surface only at runtime, where diagnosis is difficult. Cross-model validation is therefore an engineering control, not merely a consistency check on names.
+
+The timer-contract work is an initial instance of this broader validation requirement. Subsequent work shall cover ordinary event objects and delivery operations, with regression tests exercising the full validator entry point so that a checker cannot exist in isolation without being invoked.
+
 ## Timers as Behavioural Contracts
 
 Timers are first-class collaborators, including timers local to an individual HSM. Their cadence, purpose, event route and receiver can express application requirements valuable to architects, developers and testers. For example, the Rain Gauge SleepTimer describes a periodic opportunity for Control to consider deep sleep after an inactivity interval.
@@ -94,7 +106,7 @@ Structured cadence and purpose metadata, compact timer rendering, and detailed d
 
 ## Consequences
 
-The complete collaboration specification supports authoritative signal generation, contextual comment preservation, richer validation and derived artefacts while the primary diagram remains legible. Some information will necessarily require inspection of the source, HSM models or another view. This trade-off is accepted.
+The complete collaboration specification supports authoritative signal generation, contextual comment preservation, bidirectional signal and event-contract validation, and derived artefacts while the primary diagram remains legible. Some information will necessarily require inspection of the source, HSM models or another view. This trade-off is accepted.
 
 Proposed extensions must demonstrate their value to the reader rather than merely their availability in the semantic model.
 
