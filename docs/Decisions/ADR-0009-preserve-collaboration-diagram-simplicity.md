@@ -94,6 +94,16 @@ This addresses a practical limitation of QM-based development: implementing an e
 
 The timer-contract work is an initial instance of this broader validation requirement. Subsequent work shall cover ordinary event objects and delivery operations, with regression tests exercising the full validator entry point so that a checker cannot exist in isolation without being invoked.
 
+## Distinct Application Behaviours Require Distinct Signals
+
+A collaboration signal expresses application meaning, not merely a shared implementation operation. Distinct application behaviours shall have distinct semantic signals even when they use the same sender, receiver, event payload representation, transport or downstream implementation. Overloading one application signal to conceal different behavioural obligations is an architectural anti-pattern: it makes the contract misleading and can allow validation of one path to mask an unimplemented requirement.
+
+For the Rain Gauge, a rainfall report triggered by a confirmed bucket tip and a twice-daily health report required even in the absence of rain are separate user-visible obligations. They must be distinguishable in the collaboration specification (for example, `RAIN_REPORT` and `HEALTH_REPORT`), rather than both being represented solely as `SEND_REPORT`. Their event classes, payload fields and radio-transmission machinery may be shared if appropriate; shared implementation does not merge their semantic identities. The health-report triggering and wake mechanism remain to be designed separately.
+
+This principle does not prohibit deliberately generic internal control signals such as `CONTINUE`, whose context is supplied by the receiving HSM and state. It addresses the conflation of independently meaningful application requirements, not every contextual reuse of a signal.
+
+Cross-model validation shall account for each declared application obligation independently. Evidence that the rainfall-report path is implemented must not satisfy or suppress the separate health-report contract. The tooling cannot reliably discover distinct user requirements from C++ alone: the complete Collab specification must make the distinction explicit, and the validator must preserve it.
+
 ## Timers as Behavioural Contracts
 
 Timers are first-class collaborators, including timers local to an individual HSM. Their cadence, purpose, event route and receiver can express application requirements valuable to architects, developers and testers. For example, the Rain Gauge SleepTimer describes a periodic opportunity for Control to consider deep sleep after an inactivity interval.
