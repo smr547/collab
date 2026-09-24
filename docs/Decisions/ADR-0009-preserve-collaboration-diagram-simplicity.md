@@ -56,9 +56,45 @@ The Rain Gauge remains the working application. A separate Fly 'n' Shoot `.colla
 
 The example should test whether the collaboration view adds architectural understanding without forcing every application detail into one diagram.
 
+## Complete Signal Inventory and Local Elaboration
+
+The collaboration source is the authoritative inventory of application signals, including signals used entirely within one HSM. Locality does not remove a signal from generation, validation or documentation. The primary diagram may omit or compactly render local interactions without changing the underlying model.
+
+A reflexive route expresses a local use with the existing collaboration grammar, for example:
+
+```text
+object_A --> object_A : CONTINUE  // used internally to implement transitory states in the HSM
+```
+
+No separate local-signal grammar or mandatory `local` keyword is required for this use case. A future standalone signal declaration may be considered if a concrete need arises; it is not a prerequisite for the current design.
+
+Signal identity is independent of route and receiver context. A ubiquitous signal such as `CONTINUE` may be reused by multiple AOs for different purposes. The receiving object and its HSM state establish the context. The generator emits one `CONTINUE_SIG` enumerator, not one per AO; the validator checks each declared receiving route against its own HSM.
+
+Comments attached to routes are part of the specification, not disposable diagram annotations. Generation must preserve their contextual meaning. When one signal appears on several routes, aggregate **all** associated route descriptions in the generated enum source, identifying the relevant source and receiver rather than selecting one description as the signal's universal meaning. Preserve them in derived documentation as well. For example:
+
+```cpp
+// Control -> Control: advance through transitory states.
+// Radio -> Radio: continue transmission processing.
+CONTINUE_SIG,
+```
+
+The collaboration source may be elaborated incrementally: a system architect defines principal participants and communication contracts; a developer adds local signals, reflexive routes, timers and contextual explanations as the HSM design develops. Both use the same complete specification. Generation and validation consume the elaborated model, while the primary diagram remains a selective architectural view.
+
+Generate one authoritative application signal enumeration from that complete inventory. QM-generated code shall use it rather than maintain a competing independently ordered enumeration. Framework-reserved signals remain distinct. The Rain Gauge build failure caused by `CONSIDER_SLEEPING_SIG` being present in the Collab-generated header but absent from the QM-owned enumeration demonstrates why this matters.
+
+## Timers as Behavioural Contracts
+
+Timers are first-class collaborators, including timers local to an individual HSM. Their cadence, purpose, event route and receiver can express application requirements valuable to architects, developers and testers. For example, the Rain Gauge SleepTimer describes a periodic opportunity for Control to consider deep sleep after an inactivity interval.
+
+Documentation must distinguish a timer's event-generation contract from conditional downstream behaviour: a periodic `CONSIDER_SLEEPING` event does not guarantee that the device sleeps exactly 30 seconds later when workers remain busy.
+
+A primary diagram may represent local timers as compact clock annotations or omit their detailed routes when they crowd out principal collaborators. A detailed view and generated textual documentation can expose the complete temporal contract. Rendering choices must not suppress validation, signal generation or documentation. Timer implementation and lifecycle remain in QM; cross-model checks can establish agreement without reproducing the HSM in the collaboration diagram.
+
+Structured cadence and purpose metadata, compact timer rendering, and detailed diagram modes are implementation design work, not changes to Semantic Model Draft 3 mandated by this ADR.
+
 ## Consequences
 
-The semantic model can support richer validation and derived artefacts while the primary diagram remains legible. Some information will necessarily require inspection of the source, HSM models or another view. This trade-off is accepted.
+The complete collaboration specification supports authoritative signal generation, contextual comment preservation, richer validation and derived artefacts while the primary diagram remains legible. Some information will necessarily require inspection of the source, HSM models or another view. This trade-off is accepted.
 
 Proposed extensions must demonstrate their value to the reader rather than merely their availability in the semantic model.
 
@@ -66,7 +102,7 @@ Proposed extensions must demonstrate their value to the reader rather than merel
 
 - Passive HSM declaration and rendering.
 - Concise synchronous-dispatch notation.
-- Timer declaration, cadence documentation and appearance.
+- Refinement of timer cadence/purpose metadata, compact rendering and detailed views.
 - Reconciliation of ADR-0007 with ADR-0008 in the language and tooling.
 - Validation with a separate Fly 'n' Shoot example.
 
