@@ -46,6 +46,16 @@ Timers are potentially useful collaboration participants. Their purpose and huma
 
 The diagram must not duplicate the timer's behavioural implementation in QM. The grammar for timer declarations, optional cadence documentation and PlantUML appearance are deferred to a subsequent decision.
 
+## Startup as an Application Event Source
+
+Startup circumstances may have application meaning. A platform's reset or wakeup mechanism can be translated into semantic application events rather than concealed in board-specific initialization code. A **Startup** participant is therefore permitted when it originates meaningful event communication; it is optional for applications in which startup circumstances have no domain significance. It need not be an Active Object, ISR or persistent runtime task.
+
+For the Rain Gauge, a timer wakeup calls for a health report, while a reed-switch wakeup initiates validation of a *possible* bucket tip. Cold boot and unrecognised wakeup causes must be considered separately rather than assuming that every non-timer wakeup is a reed-switch event. The application signals may be named `TIMER_WAKEUP`, `REED_SWITCH_WAKEUP` and `COLD_BOOT`; their names and meaning are independent of ESP32-specific wakeup APIs. The health and rain reports retain distinct semantic signals while sharing event payload and transmitted packet representations.
+
+The framework's HSM initial transition establishes the initial state; a subsequent application event conveys **why execution began**. Starting an AO and its underlying task is runtime setup, not itself a collaboration route. Where Startup delivers an application event, its implementation must arrange for the intended receiver and collaborators to be started before posting the event. It must use the appropriate framework event-delivery mechanism, not directly invoke a state handler.
+
+The primary diagram may show Startup and its meaningful outgoing routes without depicting the framework boot sequence or task machinery. This ADR establishes the participant's semantics, not a final `startup` declaration grammar, icon, or platform-specific implementation. Those belong to subsequent language and rendering work, together with sender-side validation of Startup event delivery.
+
 ## Relationship to QM
 
 `collab` describes system-level communication contracts; QM owns their implementation, including internal HSM behaviour, states, transitions and actions, as well as the specifics of inter-object collaboration. The primary collaboration diagram complements, rather than reproduces, the individual HSM diagrams.
