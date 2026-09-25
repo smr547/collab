@@ -14,7 +14,7 @@ The collaboration language began as a concise description of participants, their
 
 Discussion of the Rain Gauge and Samek's Fly 'n' Shoot confirms the usefulness of that model. A passive Mine HSM can receive synchronous dispatch from Tunnel; a timer can originate a meaningful event; and publish/subscribe differs from direct posting. Yet displaying every semantic distinction risks making the primary collaboration diagram crowded and less useful.
 
-The semantic model and its graphical presentation have different purposes. A complete semantic foundation need not yield an exhaustive diagram.
+The semantic model (expressed as a text file)  and its graphical presentation have different purposes. A complete semantic foundation need not yield an exhaustive diagram.
 
 ## Decision
 
@@ -22,9 +22,9 @@ The semantic model and its graphical presentation have different purposes. A com
 
 The primary diagram should communicate the participants, their collaboration relationships, communication direction and exchanged semantic signals. Additional detail should appear only when it materially improves understanding.
 
-The presence of information in the semantic model does not, by itself, justify displaying it. Information may remain available to validation, code generation or other derived views without appearing in the primary diagram.
+The presence of information in the semantic model (textual) does not, by itself, justify displaying it. Information may remain available to validation, code generation or other derived views without appearing in the primary diagram.
 
-The diagram is not a runtime event trace or an exhaustive depiction of QP machinery.
+The diagram is, by choice, not a runtime event trace nor an exhaustive depiction of QP machinery.
 
 ## Participant Scope
 
@@ -34,7 +34,7 @@ A passive Mine may appear without depicting Tunnel's ownership of its instances.
 
 ## Delivery Semantics
 
-ADR-0008's POST, PUBLISH and DISPATCH distinctions remain part of the semantic foundation. ISR context is not a fourth injection mechanism; it describes the context from which an event is injected.
+ADR-0008's POST, PUBLISH and DISPATCH distinctions remain part of the semantic foundation. ISR context is not a fourth injection mechanism; it describes the context from which an event is injected. The ISR context is a first class participant in the collaboration.
 
 Where a delivery distinction materially affects interpretation, a concise annotation may be appropriate. This ADR does not prescribe new syntax, arrow styles, an event bus, or a depiction of framework infrastructure.
 
@@ -52,7 +52,9 @@ Startup circumstances may have application meaning. A platform's reset or wakeup
 
 For the Rain Gauge, a timer wakeup calls for a health report, while a reed-switch wakeup initiates validation of a *possible* bucket tip. Cold boot and unrecognised wakeup causes must be considered separately rather than assuming that every non-timer wakeup is a reed-switch event. The application signals may be named `TIMER_WAKEUP`, `REED_SWITCH_WAKEUP` and `COLD_BOOT`; their names and meaning are independent of ESP32-specific wakeup APIs. The health and rain reports retain distinct semantic signals while sharing event payload and transmitted packet representations.
 
-The framework's HSM initial transition establishes the initial state; a subsequent application event conveys **why execution began**. Starting an AO and its underlying task is runtime setup, not itself a collaboration route. Where Startup delivers an application event, its implementation must arrange for the intended receiver and collaborators to be started before posting the event. It must use the appropriate framework event-delivery mechanism, not directly invoke a state handler.
+The framework's HSM initial transition establishes the initial state; a subsequent application event conveys **why execution began**. Starting an AO and its underlying task is routine runtime setup, not itself a collaboration route. Where Startup delivers an application event, its implementation must arrange for the intended receiver and collaborators to be started before posting the event. It must use the appropriate framework event-delivery mechanism, not directly invoke a state handler.
+
+Participants may have different lifetimes. Startup is a transient participant whose event-generation responsibility ends once it has delivered the relevant startup event; its continued existence is not required for the receiving Active Objects to operate.
 
 The primary diagram may show Startup and its meaningful outgoing routes without depicting the framework boot sequence or task machinery. This ADR establishes the participant's semantics, not a final `startup` declaration grammar, icon, or platform-specific implementation. Those belong to subsequent language and rendering work, together with sender-side validation of Startup event delivery.
 
@@ -67,6 +69,13 @@ The Rain Gauge remains the working application. A separate Fly 'n' Shoot `.colla
 The example should test whether the collaboration view adds architectural understanding without forcing every application detail into one diagram.
 
 ## Complete Signal Inventory and Local Elaboration
+
+Signal defintion seems to arise from two activities
+
+1. first class signals arising between distinct participants in the collaboration 
+2. signals **invented** by the designer when constructing the details HSMN associated with an Active Object. These can be classified as ``local`` because there source and destination are the same AO. (Perhaps the term ``reflexive signal`` would be more appropriate) 
+
+Both signal types are legitimate but only the former is informative on a system collaboration diagram.
 
 The collaboration source is the authoritative inventory of application signals, including signals used entirely within one HSM. Locality does not remove a signal from generation, validation or documentation. The primary diagram may omit or compactly render local interactions without changing the underlying model.
 
@@ -96,7 +105,7 @@ Generate one authoritative application signal enumeration from that complete inv
 
 Every application signal shall be declared in the complete collaboration specification, including signals local to one HSM. Every declared signal shall have an accounted-for implementation, and every implementation use of an application signal shall be traceable to its declaration. Validation must reconcile Collab and QM in both directions so that neither an unimplemented architectural signal nor an undeclared implementation signal can silently escape detection.
 
-A signal's presence in the generated enumeration is necessary but not sufficient. For each declared event-generation and delivery route, cross-model validation should establish the applicable implementation obligations: an event object with the intended signal; the appropriate creation or allocation mechanism (including static events, dynamically allocated events and framework-owned time events); a matching POST, PUBLISH or DISPATCH operation, including ISR-safe variants where required; and a receiving HSM path that handles the signal. Where relevant, checks should cover event type, payload, pool configuration, destination and lifecycle. A signal shared by multiple routes must be checked in each declared context rather than treated as fulfilled by one occurrence.
+A signal's presence in the generated enumeration is necessary (to the code compiler) but not sufficient (for the operation of the application). For each declared event-generation and delivery route, cross-model validation should establish the applicable implementation obligations: an event object with the intended signal; the appropriate creation or allocation mechanism (including static events, dynamically allocated events and framework-owned time events); a matching POST, PUBLISH or DISPATCH operation, including ISR-safe variants where required; and a receiving HSM path that handles the signal. Where relevant, checks should cover event type, payload, pool configuration, destination and lifecycle. A signal shared by multiple routes must be checked in each declared context rather than treated as fulfilled by one occurrence.
 
 The validator should report missing or inconsistent ingredients as actionable errors, while distinguishing proven static properties from runtime behaviour that cannot be established statically. Explicitly modelled external or intentionally deferred obligations may require a documented exception rather than silently disappearing from coverage.
 
@@ -116,7 +125,7 @@ Cross-model validation shall account for each declared application obligation in
 
 ## Timers as Behavioural Contracts
 
-Timers are first-class collaborators, including timers local to an individual HSM. Their cadence, purpose, event route and receiver can express application requirements valuable to architects, developers and testers. For example, the Rain Gauge SleepTimer describes a periodic opportunity for Control to consider deep sleep after an inactivity interval.
+Timers are first-class collaborators, including timers local to an individual HSM. Their cadence, purpose, event route and receiver can express application requirements valuable to architects, developers, testers and maintainers. For example, the Rain Gauge SleepTimer describes a periodic opportunity for Control to consider deep sleep after an inactivity interval.
 
 Documentation must distinguish a timer's event-generation contract from conditional downstream behaviour: a periodic `CONSIDER_SLEEPING` event does not guarantee that the device sleeps exactly 30 seconds later when workers remain busy.
 
@@ -142,6 +151,6 @@ These are subsequent language and rendering decisions, not amendments to Semanti
 
 ## Principle
 
-> **The semantic model defines what the collaboration language can understand; the collaboration diagram presents what a reader needs to see.**
+> **The text-based semantic model defines what the collaboration language can understand; the collaboration diagram presents what a reader needs to see.**
 
 The diagram communicates architecture, not all the machinery beneath it.
