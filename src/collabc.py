@@ -67,6 +67,7 @@ class Model:
     title: str = "AO Collaboration"
     aos: List[str] = field(default_factory=list)
     roles: dict[str, str] = field(default_factory=dict)
+    timer_cadences: dict[str, str] = field(default_factory=dict)
     collaborations: List[Collaboration] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
 
@@ -139,7 +140,25 @@ def parse_model(path: Path) -> Model:
                 model.title = " ".join(parts[1:])
                 continue
 
-            if stripped.startswith(("ao ", "isr ")):
+            if stripped.startswith(("ao ", "isr ", "timer ")):
+                if stripped.startswith("timer "):
+                    try:
+                        parts = shlex.split(stripped)
+                    except ValueError as exc:
+                        raise ModelError(f"{path}:{idx}: invalid timer declaration: {exc}") from exc
+                    if len(parts) not in (2, 3):
+                        raise ModelError(f"{path}:{idx}: expected timer name and optional quoted cadence")
+                    name = parts[1]
+                    if not AO_RE.match(name):
+                        raise ModelError(f"{path}:{idx}: invalid participant name '{name}'")
+                    if name in seen_aos:
+                        raise ModelError(f"{path}:{idx}: duplicate participant '{name}'")
+                    seen_aos.add(name)
+                    model.aos.append(name)
+                    model.roles[name] = "TIMER"
+                    if len(parts) == 3:
+                        model.timer_cadences[name] = parts[2]
+                    continue
                 parts = stripped.split()
                 if len(parts) != 2:
                     raise ModelError(f"{path}:{idx}: expected 'ao <Name>' or 'isr <Name>'")
@@ -307,7 +326,15 @@ def generate_puml(model: Model, source_name: str) -> str:
     ]
 
     for ao in model.aos:
-        out.append(f'component "{ao}" as {ao} <<{model.roles.get(ao, "AO")}>>')
+        if model.roles.get(ao) == "TIMER":
+            # Clock glyph is presentation only; cadence is descriptive, not executable.
+            label = f"◷ <b>{ao}</b>"
+            if ao in model.timer_cadences:
+                cadence = model.timer_cadences[ao].replace('"', "'").replace("\\n", " ")
+                label += f"\\n{cadence}"
+            out.append(f'component "{label}" as {ao} <<TIMER>>')
+        else:
+            out.append(f'component "{ao}" as {ao} <<{model.roles.get(ao, "AO")}>>')
 
     out.append("")
 
