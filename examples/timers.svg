@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="297px" preserveAspectRatio="none" style="width:538px;height:297px;" version="1.1" viewBox="0 0 538 297" width="538px" zoomAndPan="magnify"><defs><filter height="300%" id="fj2ktxhy973na" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="245" x="154.5" y="19.2419">Timer collaboration example</text><!--MD5=[c31344101066c7cec356c83fbca1228f]
+entity Control--><rect fill="#FEFECE" filter="url(#fj2ktxhy973na)" height="58.1358" style="stroke: #A80036; stroke-width: 1.5;" width="69" x="199" y="228.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="194" y="233.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="194" y="276.6517"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="217.5" y="253.4818">«AO»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="49" x="209" y="272.5497">Control</text><!--MD5=[45efb7bb436b51eea8ddd13b2265f8ee]
+entity SleepTimer--><rect fill="#FEFECE" filter="url(#fj2ktxhy973na)" height="77.2038" style="stroke: #A80036; stroke-width: 1.5;" width="205" x="6" y="32.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="37.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="99.7196"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="53" x="82" y="57.4818">«TIMER»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="10" x="16" y="76.5497">◷</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="77" x="30" y="76.5497">SleepTimer</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="185" x="16" y="95.6176">One-shot; inactivity interval</text><!--MD5=[abbbd9cb5a7a6d7a79c11aa07bd39fea]
+entity HealthTimer--><rect fill="#FEFECE" filter="url(#fj2ktxhy973na)" height="77.2038" style="stroke: #A80036; stroke-width: 1.5;" width="227" x="246" y="32.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="241" y="37.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="241" y="99.7196"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="53" x="333" y="57.4818">«TIMER»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="10" x="256" y="76.5497">◷</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="86" x="270" y="76.5497">HealthTimer</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="207" x="256" y="95.6176">Periodic; health-report interval</text><!--MD5=[6ae4b05c41f27e7bd6f930f0ed1cc8e0]
+link SleepTimer to Control--><path d="M205,109.6558 C205,109.6558 205,223.3858 205,223.3858 " fill="none" id="SleepTimer-&gt;Control" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="205,228.3858,209,219.3858,205,223.3858,201,219.3858,205,228.3858" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M113.5,144.5158 L113.5,189.5158 L268.5,189.5158 L268.5,154.5158 L258.5,144.5158 L113.5,144.5158 " fill="#FBFB77" filter="url(#fj2ktxhy973na)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M258.5,144.5158 L258.5,154.5158 L268.5,154.5158 L258.5,144.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="128" x="119.5" y="163.4129">SleepTimer -&gt; Control</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="128" x="125.5" y="181.1189">CONSIDER_SLEEPING</text><!--MD5=[97a83ac2dc98ac688acddc92cce5706e]
+link HealthTimer to Control--><path d="M257,109.6558 C257,109.6558 257,223.3858 257,223.3858 " fill="none" id="HealthTimer-&gt;Control" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="257,228.3858,261,219.3858,257,223.3858,253,219.3858,257,228.3858" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M364.5,144.5158 L364.5,189.5158 L526.5,189.5158 L526.5,154.5158 L516.5,144.5158 L364.5,144.5158 " fill="#FBFB77" filter="url(#fj2ktxhy973na)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M516.5,144.5158 L516.5,154.5158 L526.5,154.5158 L516.5,144.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="136" x="370.5" y="163.4129">HealthTimer -&gt; Control</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="135" x="376.5" y="181.1189">HEALTH_REPORT_DUE</text><!--MD5=[0d432f91484793bd4e366ee809c9c900]
+@startuml
+title Timer collaboration example
+
+skinparam linetype ortho
+top to bottom direction
+
+component "Control" as Control <<AO>>
+component "◷ <b>SleepTimer</b>\nOne-shot; inactivity interval" as SleepTimer <<TIMER>>
+component "◷ <b>HealthTimer</b>\nPeriodic; health-report interval" as HealthTimer <<TIMER>>
+
+SleepTimer - -> Control
+note on link
+  SleepTimer -> Control
+    CONSIDER_SLEEPING
+end note
+
+HealthTimer - -> Control
+note on link
+  HealthTimer -> Control
+    HEALTH_REPORT_DUE
+end note
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 21:22:07 AEDT 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.12+8-1-24.04-Ubuntu
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
