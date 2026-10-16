@@ -5,7 +5,7 @@
 ## Inputs
 
 - **QM behavioural model:** Quantum Leaps QP/C++ 7.3.2 archive, `qpcpp/examples/arm-cm/dpp_nucleo-l152re/dpp.qm`. Source and byte-comparison procedure are documented in [README.md](README.md).
-- **Collaboration contract:** independently authored `examples/DPP.collab`; committed at `8779714` (`examples/DPP.collab`), independently authored.
+- **Collaboration contract:** independently authored [`examples/DPP.collab`](https://github.com/smr547/collab/blob/8779714/examples/DPP.collab); committed at `8779714`.
 
 ## QM input fingerprint
 
