@@ -49,14 +49,14 @@ end
         qm = """<model>
 <class name="Philo">
 <operation name="Philo"><code>: m_timeEvt(this, TIMEOUT_SIG, 0U)</code></operation>
-<initial>subscribe(EAT_SIG);</initial>
+<initial><action>subscribe(EAT_SIG);</action></initial>
 <state><entry>auto *pe = Q_NEW(TableEvt, HUNGRY_SIG);
 AO_Table->POST(pe, this);</entry>
 <exit>auto *pe = Q_NEW(TableEvt, DONE_SIG);
 QP::QActive::PUBLISH(pe, this);</exit></state>
 </class>
 <class name="Table">
-<initial>subscribe(DONE_SIG);</initial>
+<initial><action>subscribe(DONE_SIG);</action></initial>
 <state><entry>auto *pe = Q_NEW(TableEvt, EAT_SIG);
 QP::QActive::PUBLISH(pe, this);</entry></state>
 </class>
