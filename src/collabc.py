@@ -19,6 +19,7 @@ import argparse
 import re
 import shlex
 import sys
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Tuple
@@ -427,6 +428,84 @@ def generate_signals_hpp(
     return "\n".join(out)
 
 
+
+def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[int, int]:
+    """Conservative cross-model inspection: identity, signal declaration, trigger.
+
+    This does not prove posting, publishing, subscriptions, or runtime delivery.
+    Timers are deliberately reported as undetermined in this first pass.
+    """
+    try:
+        root = ET.parse(qm_path).getroot()
+    except ET.ParseError as exc:
+        raise ModelError(f"{qm_path}: invalid QM XML: {exc}") from exc
+
+    classes = {
+        node.get("name"): node
+        for node in root.iter("class")
+        if node.get("name")
+    }
+    signals = set()
+    for attr in root.iter("attribute"):
+        if attr.get("name") == "AppSignals":
+            source = attr.findtext("code") or ""
+            signals.update(re.findall(r"\\b([A-Z][A-Z0-9_]*_SIG)\\b", source))
+
+    failures = 0
+    unknown = 0
+    for signal, sender, receiver in all_signals(model):
+        mapped_sender = aliases.get(sender, sender)
+        mapped_receiver = aliases.get(receiver, receiver)
+        if model.roles.get(sender) == "TIMER":
+            print(f"UNDETERMINED: {sender}->{receiver} {signal}: "
+                  "timer binding/delivery is not checked in pass 1")
+            unknown += 1
+            continue
+        if mapped_sender not in classes or mapped_receiver not in classes:
+            absent = [name for name in (mapped_sender, mapped_receiver)
+                      if name not in classes]
+            print(f"UNDETERMINED: {sender}->{receiver} {signal}: "
+                  f"QM class identity unresolved: {', '.join(absent)}")
+            unknown += 1
+            continue
+        qm_signal = signal + "_SIG"
+        if qm_signal not in signals:
+            print(f"MISSING: {sender}->{receiver} {signal}: "
+                  f"{qm_signal} not declared in QM AppSignals")
+            failures += 1
+            continue
+        receiver_class = classes[mapped_receiver]
+        triggers = set()
+        for transition in receiver_class.iter("tran"):
+            for name in (transition.get("trig") or "").split(","):
+                triggers.add(name.strip().removesuffix("_SIG"))
+        if signal not in triggers:
+            print(f"MISSING: {sender}->{receiver} {signal}: "
+                  f"no {signal} trigger in QM class {mapped_receiver}")
+            failures += 1
+        else:
+            print(f"PARTIAL: {sender}->{receiver} {signal}: "
+                  f"{qm_signal} declared and {mapped_receiver} handles {signal}; "
+                  "emission/delivery not checked")
+    print(f"QM inspection: {failures} missing, {unknown} undetermined; "
+          "PARTIAL does not establish an end-to-end match")
+    return failures, unknown
+
+
+def parse_qm_aliases(entries: list[str]) -> dict[str, str]:
+    aliases = {}
+    for entry in entries:
+        if "=" not in entry:
+            raise ModelError(f"invalid --qm-map {entry!r}; expected CollabName=QMName")
+        source, target = entry.split("=", 1)
+        if not AO_RE.fullmatch(source) or not AO_RE.fullmatch(target):
+            raise ModelError(f"invalid --qm-map {entry!r}; names must be identifiers")
+        if source in aliases:
+            raise ModelError(f"duplicate --qm-map for {source}")
+        aliases[source] = target
+    return aliases
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate and compile a .collab AO collaboration model."
@@ -460,6 +539,9 @@ def main() -> int:
         "--max-signal", default="MAX_APP_SIG",
         help="final generated enum member (default: MAX_APP_SIG)"
     )
+    parser.add_argument("--qm", type=Path, help="inspect against a QM XML model (read-only)")
+    parser.add_argument("--qm-map", action="append", default=[], metavar="COLLAB=QM",
+                        help="explicit participant identity mapping; repeat as needed")
     args = parser.parse_args()
 
     if args.puml_only and args.signals_only:
@@ -486,6 +568,18 @@ def main() -> int:
         f"{len(model.collaborations)} collaboration(s), "
         f"{sum(1 for _ in unique_signals(model))} signal(s)"
     )
+
+    if args.qm:
+        try:
+            aliases = parse_qm_aliases(args.qm_map)
+            missing, _undetermined = inspect_qm(model, args.qm, aliases)
+        except (OSError, ModelError) as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
+        if missing:
+            return 4
+    elif args.qm_map:
+        parser.error("--qm-map requires --qm")
 
     if args.check:
         return 0
