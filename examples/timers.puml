@@ -5,7 +5,7 @@ title Timer collaboration example
 skinparam linetype ortho
 top to bottom direction
 
-component "Control" as Control <<AO>>
+component "<size:17><b>Control</b></size>" as Control <<AO>>
 component "◷ <b>SleepTimer</b>\nOne-shot; inactivity interval" as SleepTimer <<TIMER>>
 component "◷ <b>HealthTimer</b>\nPeriodic; health-report interval" as HealthTimer <<TIMER>>
 
