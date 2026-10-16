@@ -9,7 +9,7 @@
 
 The current exploration began partly as an evaluation of AI as an engineering tool. Sustained investigations of embedded concurrency, QP/C++, QM and Executable UML have suggested a more useful question than whether AI can quickly generate code: how can a human engineer and an AI reason together, precisely and productively, about a system?
 
-The Dining Philosophers Problem (DPP) provides a small example. A concise collaboration specification identifies Table, Philosopher and PhilosopherTimer and the four required signals: HUNGRY, DONE, EAT and TIMEOUT. Natural-language comments explain the circumstances in which each signal is generated. This gives the participants in a design discussion a coherent communication architecture before any individual HSM is designed.
+The Dining Philosophers Problem (DPP) provides a small example. A concise collaboration specification (see below) identifies Table, Philosopher and PhilosopherTimer and the four required signals: HUNGRY, DONE, EAT and TIMEOUT. Natural-language comments explain the circumstances in which each signal is generated. This gives the participants in a design discussion a coherent communication architecture before any individual HSM is designed.
 
 However, communication alone cannot explain domain terms such as *adjacent philosophers*. Those meanings must be established in a Domain Information Model (DIM).
 
@@ -23,7 +23,7 @@ These are complementary, mutually constrained descriptions, not interchangeable 
 - **Collaboration model:** participants, permitted/required signals, communication direction and circumstances of generation. It defines the communication contract.
 - **QM/HSM models:** states, transitions, guards and actions implementing the required behaviour. They must respect the domain and communication contracts.
 
-Design is iterative: evidence from HSM construction or execution may prompt deliberate revision of the earlier models. The implementation must not silently redefine them.
+Design is iterative: evidence from HSM construction or execution must prompt deliberate revision of the earlier models. The implementation must not silently redefine them.
 
 ## DPP thought experiment
 
@@ -54,6 +54,8 @@ collaboration PhilosopherTimer Philosopher
 end
 ```
 
+Once the timer rendering convention is settled, add a graphical representation generated from the corresponding collaboration specification at a documented renderer revision. Until then, the textual example is the reviewable reference; do not introduce an unstable graphic into this ADR.
+
 The actual working draft is `examples/DPP.collab` in the author's local workspace at the time of discussion; this ADR does **not** add or assert that file is committed. The removed TableTimer was a modelling correction: the examined DPP has no Table timer.
 
 The `#` comments are accepted by the current parser but discarded; they document intent for human review, and are not presently machine-checkable preconditions. Retaining them as structured model metadata is a possible later improvement, not an adopted requirement.
@@ -62,7 +64,7 @@ The communication specification does not by itself encode event delivery mechani
 
 ## Validation implications
 
-The DPP collaboration model is to be developed independently of Miro Samek's unmodified DPP QM example. The planned validator checks **both** required communication and extraneous communication/handlers within an explicitly defined scope. The Philosopher's DONE handlers are candidate negative tests, not evidence of Miro's intention. A successful negative test must not be made to pass by copying implementation details into the contract.
+The DPP collaboration model is to be developed independently of Miro Samek's unmodified DPP QM example. The planned validator checks **both** required communication and extraneous communication/handlers within an explicitly defined scope. The Philosopher's DONE handlers (within the QM HSM) are candidate negative tests, not evidence of Miro's intention. A successful negative test must not be made to pass by copying implementation details into the contract.
 
 We will first review the architectural meaning of the model, then build the smallest useful validator. More complex public QP examples may follow DPP.
 
