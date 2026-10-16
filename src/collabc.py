@@ -141,7 +141,7 @@ def parse_model(path: Path) -> Model:
                 model.title = " ".join(parts[1:])
                 continue
 
-            if stripped.startswith(("ao ", "isr ", "timer ")):
+            if stripped.startswith(("ao ", "isr ", "external ", "timer ")):
                 if stripped.startswith("timer "):
                     try:
                         parts = shlex.split(stripped)
@@ -162,7 +162,7 @@ def parse_model(path: Path) -> Model:
                     continue
                 parts = stripped.split()
                 if len(parts) != 2:
-                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>' or 'isr <Name>'")
+                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>', 'isr <Name>' or 'external <Name>'")
                 role = parts[0].upper()
                 name = parts[1]
                 if not AO_RE.match(name):
@@ -327,7 +327,9 @@ def generate_puml(model: Model, source_name: str) -> str:
     ]
 
     for ao in model.aos:
-        if model.roles.get(ao) == "TIMER":
+        if model.roles.get(ao) == "EXTERNAL":
+            out.append(f'actor "{ao}" as {ao}')
+        elif model.roles.get(ao) == "TIMER":
             # Timers are event sources, not AOs. Keep their participant
             # symbols compact; descriptive cadence belongs in a separate note.
             out.append(f'component "{ao}" as {ao} <<Timer>>')
