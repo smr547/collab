@@ -34,6 +34,34 @@ Compare only the `.collab` and `.qm` source models in the first inspection pass.
 
 _No cross-model findings have been established yet. In particular, earlier discussion of possible `DONE_SIG` handler discrepancies remains a hypothesis to investigate, not a validated defect._
 
+## Signal-by-signal comparison — inspection pass 1
+
+The `.collab` model uses signal names without `_SIG`; the QM model uses `*_SIG` enumerators and transition triggers without the suffix. The correspondence below is a **proposed normalization** to test, not a general language rule.
+
+| Collaboration declaration | QM evidence | Assessment |
+| --- | --- | --- |
+| `Philosopher -> Table: HUNGRY` | `Philo.hungry` entry constructs `HUNGRY_SIG` and calls `AO_Table->POST(pe, this)`; `Table.serving` and `Table.paused` handle `HUNGRY`. | **Satisfied**, subject to mapping `Philosopher` to `Philo`. Direct posting supports the destination. |
+| `Philosopher -> Table: DONE` | `Philo.eating` exit publishes `DONE_SIG`; `Table` subscribes to `DONE_SIG` and handles `DONE` in serving and paused states. `Philo` also has defensive `DONE` handlers but does not subscribe to `DONE_SIG`. | **Satisfied**, subject to active-object name mapping and pub/sub interpretation. No evidence of delivery to `Philo` merely from its handlers. |
+| `Table -> Philosopher: EAT` | `Table.serving` publishes `EAT_SIG` when forks are granted; `Philo` subscribes to `EAT_SIG` and handles `EAT` (notably in hungry state). | **Satisfied**, subject to active-object name mapping and pub/sub interpretation. Broadcast signal has a `philoId` payload; it is not point-to-point addressing. |
+| `PhilosopherTimer -> Philosopher: TIMEOUT` | `Philo` constructor initializes `m_timeEvt(this, TIMEOUT_SIG, 0U)`; thinking/eating entries arm the time event and their `TIMEOUT` transitions are defined. | **Satisfied** as an internal timer delivery, subject to mapping the abstract timer name to `m_timeEvt`. |
+
+### Semantic distinctions and scope
+
+1. `Philosopher` in the collaboration model and `Philo` in QM are **not identical identifiers**. The comparison above explicitly assumes an alias. The validator must either accept a documented mapping or report the unresolved name mismatch; it must not silently equate names.
+2. `DONE_SIG` and `EAT_SIG` use QP publish/subscribe, not direct `POST` to a named recipient. A collaboration arrow describes an intended communication relationship, not necessarily the transport primitive. The validator must establish subscription and emission, not infer direct addressing.
+3. QM includes `PAUSE_SIG`, `SERVE_SIG` and `TEST_SIG` originating outside these declared collaborations. Whether these are omissions depends on the intended boundary of the `.collab` contract. They are **out-of-scope / undetermined**, not automatically defects.
+4. This pass inspects QM model XML and the collaboration declaration, not compiled/generated C++. Dynamic runtime ordering, reachability and all possible event deliveries are not proven.
+5. The `Philo` handlers for `DONE` and `EAT` in other states include assertions about `philoId`; they should not be treated as independent inbound collaboration edges.
+
+### Candidate executable validation rules
+
+- **V1 — AO identity resolution:** resolve declared collaboration participants against QM active objects using explicit mappings; report unmapped identifiers.
+- **V2 — Direct-post edge:** where QM code creates signal `S` and posts to a known AO, verify a compatible collaboration edge and recipient trigger.
+- **V3 — Pub/sub edge:** where QM code publishes signal `S`, derive possible recipients from subscriptions, then check corresponding collaboration edges and handlers; distinguish publication from delivery to a particular instance.
+- **V4 — Timer edge:** match a QM `QTimeEvt` bound to an owner AO and signal with a declared timer-to-AO edge; do not infer a separately instantiated active object.
+- **V5 — Coverage boundary:** distinguish undeclared signals from definite contract violations until the contract's completeness policy is specified.
+- **V6 — Evidence reporting:** for every result, retain XML element, code fragment, rule, assumptions and confidence/status.
+
 ## Next steps
 
 1. Commit/identify the exact `DPP.collab` input.
