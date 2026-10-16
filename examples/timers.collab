@@ -1,0 +1,16 @@
+collab 1
+title "Timer collaboration example"
+
+ao Control
+timer SleepTimer "One-shot; inactivity interval"
+timer HealthTimer "Periodic; health-report interval"
+
+collaboration SleepTimer Control
+  SleepTimer -> Control
+    CONSIDER_SLEEPING
+end
+
+collaboration HealthTimer Control
+  HealthTimer -> Control
+    HEALTH_REPORT_DUE
+end

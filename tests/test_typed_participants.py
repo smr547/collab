@@ -29,7 +29,7 @@ end
         self.assertEqual(model.roles, {"TippingBucket": "AO", "BucketReedSwitch": "ISR"})
         self.assertEqual(model.warnings, [])
         puml = collabc.generate_puml(model, "sample.collab")
-        self.assertIn('component "TippingBucket" as TippingBucket <<AO>>', puml)
+        self.assertIn('component "<size:17><b>TippingBucket</b></size>" as TippingBucket <<AO>>', puml)
         self.assertIn('component "BucketReedSwitch" as BucketReedSwitch <<ISR>>', puml)
         self.assertIn("BUCKET_SWITCH_CLOSING_SIG", collabc.generate_signals_hpp(model, "sample.collab", "AppSignals", "MAX_APP_SIG"))
 

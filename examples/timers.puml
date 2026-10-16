@@ -1,0 +1,30 @@
+@startuml
+' GENERATED from timers.collab; do not edit by hand.
+title Timer collaboration example
+
+skinparam linetype ortho
+top to bottom direction
+
+component "<size:17><b>Control</b></size>" as Control <<AO>>
+component "SleepTimer" as SleepTimer <<Timer>>
+note right of SleepTimer
+  One-shot; inactivity interval
+end note
+component "HealthTimer" as HealthTimer <<Timer>>
+note right of HealthTimer
+  Periodic; health-report interval
+end note
+
+SleepTimer --> Control
+note on link
+  SleepTimer -> Control
+    CONSIDER_SLEEPING
+end note
+
+HealthTimer --> Control
+note on link
+  HealthTimer -> Control
+    HEALTH_REPORT_DUE
+end note
+
+@enduml

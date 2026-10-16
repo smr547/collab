@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="282px" preserveAspectRatio="none" style="width:710px;height:282px;" version="1.1" viewBox="0 0 710 282" width="710px" zoomAndPan="magnify"><defs><filter height="300%" id="fd5hjdmcf4ff7" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="245" x="236" y="19.2419">Timer collaboration example</text><!--MD5=[c31344101066c7cec356c83fbca1228f]
+entity Control--><rect fill="#FEFECE" filter="url(#fd5hjdmcf4ff7)" height="62.2219" style="stroke: #A80036; stroke-width: 1.5;" width="84" x="189" y="209.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="184" y="214.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="184" y="261.7377"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="215" y="234.4818">«AO»</text><text fill="#000000" font-family="sans-serif" font-size="17" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="64" x="199" y="256.7567">Control</text><!--MD5=[45efb7bb436b51eea8ddd13b2265f8ee]
+entity SleepTimer--><rect fill="#FEFECE" filter="url(#fd5hjdmcf4ff7)" height="58.1358" style="stroke: #A80036; stroke-width: 1.5;" width="96" x="6" y="32.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="37.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="80.6517"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="50" x="29" y="57.4818">«Timer»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="76" x="16" y="76.5497">SleepTimer</text><path d="M137.5,47.5158 L137.5,57.5158 L102.09,61.5158 L137.5,65.5158 L137.5,75.2219 A0,0 0 0 0 137.5,75.2219 L322.5,75.2219 A0,0 0 0 0 322.5,75.2219 L322.5,57.5158 L312.5,47.5158 L137.5,47.5158 A0,0 0 0 0 137.5,47.5158 " fill="#FBFB77" filter="url(#fd5hjdmcf4ff7)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M312.5,47.5158 L312.5,57.5158 L322.5,57.5158 L312.5,47.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="164" x="143.5" y="66.4129">One-shot; inactivity interval</text><!--MD5=[abbbd9cb5a7a6d7a79c11aa07bd39fea]
+entity HealthTimer--><rect fill="#FEFECE" filter="url(#fd5hjdmcf4ff7)" height="58.1358" style="stroke: #A80036; stroke-width: 1.5;" width="103" x="357.5" y="32.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="352.5" y="37.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="352.5" y="80.6517"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="50" x="384" y="57.4818">«Timer»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="83" x="367.5" y="76.5497">HealthTimer</text><path d="M495.5,47.5158 L495.5,57.5158 L460.87,61.5158 L495.5,65.5158 L495.5,75.2219 A0,0 0 0 0 495.5,75.2219 L698.5,75.2219 A0,0 0 0 0 698.5,75.2219 L698.5,57.5158 L688.5,47.5158 L495.5,47.5158 A0,0 0 0 0 495.5,47.5158 " fill="#FBFB77" filter="url(#fd5hjdmcf4ff7)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M688.5,47.5158 L688.5,57.5158 L698.5,57.5158 L688.5,47.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="182" x="501.5" y="66.4129">Periodic; health-report interval</text><!--MD5=[6ae4b05c41f27e7bd6f930f0ed1cc8e0]
+link SleepTimer to Control--><path d="M102.02,85.5158 C150.1,85.5158 217,85.5158 217,85.5158 C217,85.5158 217,204.1458 217,204.1458 " fill="none" id="SleepTimer-&gt;Control" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="217,209.1458,221,200.1458,217,204.1458,213,200.1458,217,209.1458" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M132,125.5158 L132,170.5158 L287,170.5158 L287,135.5158 L277,125.5158 L132,125.5158 " fill="#FBFB77" filter="url(#fd5hjdmcf4ff7)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M277,125.5158 L277,135.5158 L287,135.5158 L277,125.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="128" x="138" y="144.4129">SleepTimer -&gt; Control</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="128" x="144" y="162.1189">CONSIDER_SLEEPING</text><!--MD5=[97a83ac2dc98ac688acddc92cce5706e]
+link HealthTimer to Control--><path d="M357.11,80.5158 C309.06,80.5158 245,80.5158 245,80.5158 C245,80.5158 245,204.2858 245,204.2858 " fill="none" id="HealthTimer-&gt;Control" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="245,209.2858,249,200.2858,245,204.2858,241,200.2858,245,209.2858" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M377,125.5158 L377,170.5158 L539,170.5158 L539,135.5158 L529,125.5158 L377,125.5158 " fill="#FBFB77" filter="url(#fd5hjdmcf4ff7)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M529,125.5158 L529,135.5158 L539,135.5158 L529,125.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="136" x="383" y="144.4129">HealthTimer -&gt; Control</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="135" x="389" y="162.1189">HEALTH_REPORT_DUE</text><!--MD5=[f13fd544ecf4d31ede5170f2199761ca]
+@startuml
+title Timer collaboration example
+
+skinparam linetype ortho
+top to bottom direction
+
+component "<size:17><b>Control</b></size>" as Control <<AO>>
+component "SleepTimer" as SleepTimer <<Timer>>
+note right of SleepTimer
+  One-shot; inactivity interval
+end note
+component "HealthTimer" as HealthTimer <<Timer>>
+note right of HealthTimer
+  Periodic; health-report interval
+end note
+
+SleepTimer - -> Control
+note on link
+  SleepTimer -> Control
+    CONSIDER_SLEEPING
+end note
+
+HealthTimer - -> Control
+note on link
+  HealthTimer -> Control
+    HEALTH_REPORT_DUE
+end note
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 21:22:07 AEDT 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.12.1+1-1-24.04.4-Ubuntu
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
