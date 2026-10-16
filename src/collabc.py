@@ -540,6 +540,8 @@ def main() -> int:
         help="final generated enum member (default: MAX_APP_SIG)"
     )
     parser.add_argument("--qm", type=Path, help="inspect against a QM XML model (read-only)")
+    parser.add_argument("--qm-delivery", action="store_true",
+                        help="also inspect QM posting, pub/sub and timer source patterns")
     parser.add_argument("--qm-map", action="append", default=[], metavar="COLLAB=QM",
                         help="explicit participant identity mapping; repeat as needed")
     args = parser.parse_args()
@@ -573,13 +575,17 @@ def main() -> int:
         try:
             aliases = parse_qm_aliases(args.qm_map)
             missing, _undetermined = inspect_qm(model, args.qm, aliases)
+            if args.qm_delivery:
+                from qm_delivery import inspect_delivery
+                delivery_missing, _delivery_unknown = inspect_delivery(model, args.qm, aliases)
+                missing += delivery_missing
         except (OSError, ModelError) as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return 2
         if missing:
             return 4
-    elif args.qm_map:
-        parser.error("--qm-map requires --qm")
+    elif args.qm_map or args.qm_delivery:
+        parser.error("--qm-map and --qm-delivery require --qm")
 
     if args.check:
         return 0
