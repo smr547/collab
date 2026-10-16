@@ -520,4 +520,4 @@ collaboration SleepTimer Control
 end
 ```
 
-The generated PlantUML labels timer participants with a small clock glyph and the optional cadence. The cadence is documentation, not a parsed duration or executable scheduling rule. No QP timer creation, arming, disarming, deep-sleep wake handling or QM behaviour is generated. See `examples/timers.collab`.
+The generated PlantUML renders a compact timer participant labelled with the `«Timer»` stereotype and its name. An optional cadence appears in a separate note, not inside the participant symbol. The cadence is documentation, not a parsed duration or executable scheduling rule. No QP timer creation, arming, disarming, deep-sleep wake handling or QM behaviour is generated. See `examples/timers.collab`.
