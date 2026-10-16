@@ -449,7 +449,7 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
     for attr in root.iter("attribute"):
         if attr.get("name") == "AppSignals":
             source = attr.findtext("code") or ""
-            signals.update(re.findall(r"\\b([A-Z][A-Z0-9_]*_SIG)\\b", source))
+            signals.update(re.findall(r"\b([A-Z][A-Z0-9_]*_SIG)\b", source))
 
     failures = 0
     unknown = 0
