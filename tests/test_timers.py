@@ -27,7 +27,9 @@ class TimerTests(unittest.TestCase):
         self.assertEqual(model.roles["SleepTimer"], "TIMER")
         self.assertEqual(model.timer_cadences["SleepTimer"], "One-shot; inactivity interval")
         puml = generate_puml(model, "timers.collab")
-        self.assertIn('component "◷ <b>SleepTimer</b>\\nOne-shot; inactivity interval" as SleepTimer <<TIMER>>', puml)
+        self.assertIn('component "SleepTimer" as SleepTimer <<Timer>>', puml)
+        self.assertIn("note right of SleepTimer\\n  One-shot; inactivity interval\\nend note", puml)
+        self.assertNotIn("◷", puml)
         self.assertIn("SleepTimer --> Control", puml)
         self.assertIn("CONSIDER_SLEEPING_SIG", generate_signals_hpp(model, "timers.collab", "AppSignals", "MAX_APP_SIG"))
 
@@ -41,6 +43,14 @@ class TimerTests(unittest.TestCase):
  end
 ''')
         self.assertNotIn("SleepTimer", model.timer_cadences)
+        puml = generate_puml(model, "timers.collab")
+        self.assertIn('component "SleepTimer" as SleepTimer <<Timer>>', puml)
+        self.assertNotIn("note right of SleepTimer", puml)
+
+    def test_cadence_note_escapes_markup(self):
+        model = self.parse('''collab 1\nao Control\ntimer SleepTimer "One-shot; A < B & C > D"\ncollaboration SleepTimer Control\n  SleepTimer -> Control\n    CONSIDER_SLEEPING\nend\n''')
+        puml = generate_puml(model, "timers.collab")
+        self.assertIn("One-shot; A &lt; B &amp; C &gt; D", puml)
 
     def test_duplicate_timer_name(self):
         with self.assertRaisesRegex(ModelError, "duplicate participant"):
