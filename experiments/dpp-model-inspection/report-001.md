@@ -104,3 +104,20 @@ The user ran nine tests successfully. On the historical QP/C++ 7.3.2 QM model, t
 Inspection of the uploaded XML established the cause: `subscribe(EAT_SIG)` in `Philo` and `subscribe(DONE_SIG)` in `Table` occur inside QM `<action>` elements. The original source-block collector did not include that element type. This was an **inspector coverage defect**, not evidence of missing DPP subscriptions.
 
 The source-block collector now includes `action`, and the synthetic regression fixture represents subscriptions in nested `<initial><action>...` nodes. **The corrected version awaits a new user-side test run** before we claim all four edges supported on the reference model.
+
+## Reverse coverage experiment (implementation; awaiting execution)
+
+An opt-in `--qm-reverse` inspection discovers QM relationships independently of the collaboration declarations and compares directed triples (sender, receiver, signal). It recognizes locally constructed events delivered through direct `AO_X->POST`, `PUBLISH` combined with subscriptions, and locally bound `QTimeEvt` instances. Multiple subscribers produce multiple relationships. The categories `COVERED`, `UNDECLARED` and `UNRESOLVED` are **advisory**, and `UNDECLARED` does not currently fail `--check`.
+
+This is a bounded source-pattern inventory, **not** a proof of exhaustive communications. In particular, event allocation/delivery split across different QM code blocks, externally generated events (such as BSP inputs), alternative posting syntax, and unknown AO targets may remain unresolved or invisible. A missing discovered relationship cannot establish that the implementation lacks one. Nor does the inventory prove that Table never emits DONE.
+
+Reproduction:
+
+```bash
+python3 -m unittest discover -s tests -p 'test_qm_*.py'
+python3 src/collabc.py examples/DPP.collab \
+  --qm ~/qp_old/qpcpp/examples/arm-cm/dpp_nucleo-l152re/dpp.qm \
+  --qm-map Philosopher=Philo --qm-delivery --qm-reverse --check
+```
+
+**Status:** Code and synthetic regression tests committed. Actual reverse findings on the original QP/C++ 7.3.2 QM file must be captured from the user's run, not presumed.
