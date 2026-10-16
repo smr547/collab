@@ -6,8 +6,14 @@ skinparam linetype ortho
 top to bottom direction
 
 component "<size:17><b>Control</b></size>" as Control <<AO>>
-component "◷ <b>SleepTimer</b>\nOne-shot; inactivity interval" as SleepTimer <<TIMER>>
-component "◷ <b>HealthTimer</b>\nPeriodic; health-report interval" as HealthTimer <<TIMER>>
+component "SleepTimer" as SleepTimer <<Timer>>
+note right of SleepTimer
+  One-shot; inactivity interval
+end note
+component "HealthTimer" as HealthTimer <<Timer>>
+note right of HealthTimer
+  Periodic; health-report interval
+end note
 
 SleepTimer --> Control
 note on link
