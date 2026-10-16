@@ -11,7 +11,7 @@ from qm_signals import signal_inventory
 class SignalEvidenceTests(unittest.TestCase):
     def test_declaration_subscriptions_and_triggers_without_publishers(self):
         root = ET.fromstring("""<model>
-<attribute name="AppSignals"><code>PAUSE_SIG, SERVE_SIG, TEST_SIG, DONE_SIG</code></attribute>
+<attribute name="AppSignals"><code>Q_USER_SIG, PAUSE_SIG, SERVE_SIG, TEST_SIG, DONE_SIG, MAX_PUB_SIG, MAX_SIG</code></attribute>
 <class name="Philo"><initial><action>subscribe(TEST_SIG);</action></initial>
 <state><tran trig="TEST"/></state></class>
 <class name="Table"><initial><action>
@@ -24,6 +24,8 @@ subscribe(PAUSE_SIG); subscribe(SERVE_SIG); subscribe(TEST_SIG);
         self.assertEqual(evidence["SERVE_SIG"]["handlers"], {"Table"})
         self.assertEqual(evidence["DONE_SIG"]["declared"], {"<model>"})
         self.assertNotIn("allocators", evidence["TEST_SIG"])
+        for sentinel in ("Q_USER_SIG", "MAX_PUB_SIG", "MAX_SIG"):
+            self.assertNotIn(sentinel, evidence)
 
     def test_allocation_and_timer_are_separate_facts(self):
         root = ET.fromstring("""<model><class name="Philo">
