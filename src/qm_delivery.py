@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 def _blocks(node):
     """QM actions may be text in entry/exit/tran/choice, or child <code>."""
     for item in node.iter():
-        if item.tag in ("code", "entry", "exit", "tran", "choice", "initial", "operation"):
+        if item.tag in ("code", "action", "entry", "exit", "tran", "choice", "initial", "operation"):
             source = item.text or ""
             if source.strip():
                 yield item.tag, source
