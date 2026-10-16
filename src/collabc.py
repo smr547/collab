@@ -338,7 +338,8 @@ def generate_puml(model: Model, source_name: str) -> str:
                 out.append(f"  {cadence}")
                 out.append("end note")
         else:
-            out.append(f'component "{ao}" as {ao} <<{model.roles.get(ao, "AO")}>>')
+            label = f"<size:17><b>{ao}</b></size>" if model.roles.get(ao, "AO") == "AO" else ao
+            out.append(f'component "{label}" as {ao} <<{model.roles.get(ao, "AO")}>>')
 
     out.append("")
 
