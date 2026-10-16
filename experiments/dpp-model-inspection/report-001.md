@@ -139,3 +139,11 @@ python3 src/collabc.py examples/DPP.collab \
 ```
 
 **Awaiting historical-model execution.** The signal inventory is source-pattern evidence only. It does not scan BSP C/C++ source, prove absence of emitters, or infer publishers from subscriptions. A later common evidence model should unify these separate views without losing the distinction between signal declaration, usage and established delivery.
+
+## Reconciliation of historical QM signal and route totals
+
+The user reproduced **14 passing tests**. The first signal inventory reported 10 signal-like identifiers, 6 not in the collaboration, while the reverse route inventory reported 4 covered and 0 undeclared. These are **different denominators**, not contradictory counts: signal identities include subscriptions with unknown origins; discovered routes require evidence of sender and receiver.
+
+Three of the six reported absent identifiers were **enum sentinels** (`Q_USER_SIG`, `MAX_PUB_SIG`, `MAX_SIG`), not application communication signals. The inventory has been corrected to exclude these sentinels from the `AppSignals` scan, with regression assertions.
+
+Expected application signal totals on this QM input: **7 signal identities**; **4 represented in the collaboration** (`HUNGRY`, `DONE`, `EAT`, `TIMEOUT`); **3 not represented** (`PAUSE`, `SERVE`, `TEST`). The reverse inventory remains **4 recognized routes covered, 0 additional complete routes recognized**. These totals are not a completeness proof; the three extra signal identities require source-boundary investigation. Corrected output awaits user-side execution.
