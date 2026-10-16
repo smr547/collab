@@ -1,0 +1,20 @@
+collab 1
+title "Dining Philosophers Collaboration example"
+
+ao Table
+ao Philosopher
+timer PhilosopherTimer "One-shot; thinking and eating random interval"
+
+collaboration Philosopher Table
+  Philosopher -> Table
+    HUNGRY  # Philosopher has finished thinking and requests permission to eat
+    DONE    # Philosopher has finished eating and releases its forks
+
+  Table -> Philosopher
+    EAT     # Table grants permission to eat
+end
+
+collaboration PhilosopherTimer Philosopher
+  PhilosopherTimer -> Philosopher
+    TIMEOUT # The currently armed thinking or eating interval expires
+end
