@@ -463,6 +463,34 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
                   "timer binding/delivery is not checked in pass 1")
             unknown += 1
             continue
+        if model.roles.get(sender) == "EXTERNAL":
+            if mapped_receiver not in classes:
+                print(f"UNDETERMINED: {sender}->{receiver} {signal}: "
+                      f"QM receiver identity unresolved: {mapped_receiver}; "
+                      "external sender is not expected to be a QM class")
+                unknown += 1
+                continue
+            qm_signal = signal + "_SIG"
+            if qm_signal not in signals:
+                print(f"MISSING: {sender}->{receiver} {signal}: "
+                      f"{qm_signal} not declared in QM AppSignals")
+                failures += 1
+                continue
+            receiver_class = classes[mapped_receiver]
+            triggers = {
+                name.strip().removesuffix("_SIG")
+                for transition in receiver_class.iter("tran")
+                for name in (transition.get("trig") or "").split(",")
+            }
+            if signal not in triggers:
+                print(f"MISSING: {sender}->{receiver} {signal}: "
+                      f"no {signal} trigger in QM class {mapped_receiver}")
+                failures += 1
+            else:
+                print(f"PARTIAL: {sender}->{receiver} {signal}: "
+                      f"{qm_signal} declared and {mapped_receiver} handles {signal}; "
+                      "external origin and delivery not checked")
+            continue
         if mapped_sender not in classes or mapped_receiver not in classes:
             absent = [name for name in (mapped_sender, mapped_receiver)
                       if name not in classes]
