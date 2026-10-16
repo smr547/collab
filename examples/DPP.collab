@@ -4,6 +4,13 @@ title "Dining Philosophers Collaboration example"
 ao Table
 ao Philosopher
 timer PhilosopherTimer "One-shot; thinking and eating random interval"
+external User
+
+collaboration User Table
+  User -> Table
+    PAUSE
+    SERVE
+end
 
 collaboration Philosopher Table
   Philosopher -> Table
