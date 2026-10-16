@@ -540,6 +540,8 @@ def main() -> int:
         help="final generated enum member (default: MAX_APP_SIG)"
     )
     parser.add_argument("--qm", type=Path, help="inspect against a QM XML model (read-only)")
+    parser.add_argument("--qm-reverse", action="store_true",
+                        help="inventory QM routes absent from the collaboration contract (advisory)")
     parser.add_argument("--qm-delivery", action="store_true",
                         help="also inspect QM posting, pub/sub and timer source patterns")
     parser.add_argument("--qm-map", action="append", default=[], metavar="COLLAB=QM",
@@ -579,13 +581,16 @@ def main() -> int:
                 from qm_delivery import inspect_delivery
                 delivery_missing, _delivery_unknown = inspect_delivery(model, args.qm, aliases)
                 missing += delivery_missing
+            if args.qm_reverse:
+                from qm_reverse import inspect_reverse
+                inspect_reverse(model, args.qm, aliases)
         except (OSError, ModelError) as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return 2
         if missing:
             return 4
-    elif args.qm_map or args.qm_delivery:
-        parser.error("--qm-map and --qm-delivery require --qm")
+    elif args.qm_map or args.qm_delivery or args.qm_reverse:
+        parser.error("--qm-map, --qm-delivery and --qm-reverse require --qm")
 
     if args.check:
         return 0
