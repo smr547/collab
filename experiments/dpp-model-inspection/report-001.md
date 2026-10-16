@@ -1,6 +1,6 @@
 # DPP model inspection — Report 001
 
-**Status:** Experimental — provenance established; model analysis pending.
+**Status:** Experimental — provenance established; first inspection run reproduced by user; delivery-pattern implementation awaiting user-side test.
 
 ## Inputs
 
@@ -67,3 +67,32 @@ The `.collab` model uses signal names without `_SIG`; the QM model uses `*_SIG` 
 1. Commit/identify the exact `DPP.collab` input.
 2. Inspect the verified QM source and capture specific state/handler/action evidence.
 3. Produce a structured inspection matrix before implementing the executable validator.
+
+## Executable inspection results — first pass (user-run)
+
+On branch `feature/dpp-model-inspection`, the user ran the first-pass tests and inspected the verified QP/C++ 7.3.2 `dpp.qm` with the explicit alias `Philosopher=Philo`.
+
+- `python3 -m unittest discover -s tests -p 'test_qm_inspection.py'`: **4 tests passed**.
+- `python3 src/collabc.py examples/DPP.collab --qm ~/qp_old/qpcpp/examples/arm-cm/dpp_nucleo-l152re/dpp.qm --qm-map Philosopher=Philo --check`: **3 PARTIAL, 1 UNDETERMINED, 0 MISSING**.
+- `HUNGRY`, `DONE`, `EAT`: declared signal and receiver trigger observed; no end-to-end delivery assertion.
+- `TIMEOUT`: deliberately undetermined by the first pass.
+
+## Delivery-pattern inspection — second pass (implementation)
+
+An **optional**, experimental `--qm-delivery` pass has been added to `collabc.py` in `src/qm_delivery.py`. It inspects QM XML code blocks for:
+- locally constructed `Q_NEW(..., SIGNAL_SIG)` followed by `AO_Receiver->POST(...)`;
+- locally constructed `Q_NEW(..., SIGNAL_SIG)` followed by `PUBLISH(...)`, plus `subscribe(SIGNAL_SIG)` in the receiver's QM class;
+- a `QTimeEvt` constructor binding `m_timeEvt(this, SIGNAL_SIG, ...)` to its owner.
+
+This is **source-pattern evidence**, not a C++ parser, proof of runtime delivery, or an exhaustive semantic analysis. Ambiguous or unrecognized source patterns remain `UNDETERMINED`. The output `SUPPORTED` does not imply complete satisfaction of the collaboration contract. The first pass remains unchanged unless `--qm-delivery` is requested.
+
+Reproduce on StevenLaptop:
+
+```bash
+python3 -m unittest discover -s tests -p 'test_qm_*.py'
+python3 src/collabc.py examples/DPP.collab \
+  --qm ~/qp_old/qpcpp/examples/arm-cm/dpp_nucleo-l152re/dpp.qm \
+  --qm-map Philosopher=Philo --qm-delivery --check
+```
+
+**Execution status:** These second-pass tests and the real DPP delivery run are committed but have not yet been run in the user's environment. Record actual output here before interpreting the findings.
