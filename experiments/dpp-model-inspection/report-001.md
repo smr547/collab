@@ -121,3 +121,21 @@ python3 src/collabc.py examples/DPP.collab \
 ```
 
 **Status:** Code and synthetic regression tests committed. Actual reverse findings on the original QP/C++ 7.3.2 QM file must be captured from the user's run, not presumed.
+
+## Signal evidence inventory — fourth experimental view
+
+User reproduced **12 passing tests** and a reverse inventory of **4 covered, 0 undeclared, 0 unresolved** routes on the historical QM model. This is the complete set of **recognized routes**, not an exhaustive inventory of signal usages. In particular, `PAUSE`, `SERVE` and `TEST` subscriptions are known from the source but do not appear in that route inventory.
+
+The opt-in `--qm-signals` pass now reports QM `AppSignals` declarations, `Q_NEW` allocation sites, `subscribe` calls, transition triggers and `m_timeEvt` bindings **independently**, retaining evidence even where no sender can be identified. `NOT_IN_COLLAB` compares signal identities only and is not an error; it does not yet imply a complete communication route or determine whether an external participant belongs in the contract.
+
+Run:
+
+```bash
+python3 -m unittest discover -s tests -p 'test_qm_*.py'
+python3 src/collabc.py examples/DPP.collab \
+  --qm ~/qp_old/qpcpp/examples/arm-cm/dpp_nucleo-l152re/dpp.qm \
+  --qm-map Philosopher=Philo \
+  --qm-delivery --qm-reverse --qm-signals --check
+```
+
+**Awaiting historical-model execution.** The signal inventory is source-pattern evidence only. It does not scan BSP C/C++ source, prove absence of emitters, or infer publishers from subscriptions. A later common evidence model should unify these separate views without losing the distinction between signal declaration, usage and established delivery.
