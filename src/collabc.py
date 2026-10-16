@@ -540,6 +540,8 @@ def main() -> int:
         help="final generated enum member (default: MAX_APP_SIG)"
     )
     parser.add_argument("--qm", type=Path, help="inspect against a QM XML model (read-only)")
+    parser.add_argument("--qm-signals", action="store_true",
+                        help="inventory QM signal declarations and usage, including incomplete routes")
     parser.add_argument("--qm-reverse", action="store_true",
                         help="inventory QM routes absent from the collaboration contract (advisory)")
     parser.add_argument("--qm-delivery", action="store_true",
@@ -581,6 +583,9 @@ def main() -> int:
                 from qm_delivery import inspect_delivery
                 delivery_missing, _delivery_unknown = inspect_delivery(model, args.qm, aliases)
                 missing += delivery_missing
+            if args.qm_signals:
+                from qm_signals import inspect_signals
+                inspect_signals(model, args.qm, aliases)
             if args.qm_reverse:
                 from qm_reverse import inspect_reverse
                 inspect_reverse(model, args.qm, aliases)
@@ -589,8 +594,8 @@ def main() -> int:
             return 2
         if missing:
             return 4
-    elif args.qm_map or args.qm_delivery or args.qm_reverse:
-        parser.error("--qm-map, --qm-delivery and --qm-reverse require --qm")
+    elif args.qm_map or args.qm_delivery or args.qm_reverse or args.qm_signals:
+        parser.error("--qm-map, --qm-delivery, --qm-reverse and --qm-signals require --qm")
 
     if args.check:
         return 0
