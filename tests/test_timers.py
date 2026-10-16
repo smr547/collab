@@ -30,6 +30,7 @@ class TimerTests(unittest.TestCase):
         self.assertIn('component "SleepTimer" as SleepTimer <<Timer>>', puml)
         self.assertIn("note right of SleepTimer\n  One-shot; inactivity interval\nend note", puml)
         self.assertNotIn("◷", puml)
+        self.assertIn('component "<size:17><b>Control</b></size>" as Control <<AO>>', puml)
         self.assertIn("SleepTimer --> Control", puml)
         self.assertIn("CONSIDER_SLEEPING_SIG", generate_signals_hpp(model, "timers.collab", "AppSignals", "MAX_APP_SIG"))
 
