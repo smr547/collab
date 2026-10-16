@@ -96,3 +96,11 @@ python3 src/collabc.py examples/DPP.collab \
 ```
 
 **Execution status:** These second-pass tests and the real DPP delivery run are committed but have not yet been run in the user's environment. Record actual output here before interpreting the findings.
+
+## Second-pass run and regression (user-run)
+
+The user ran nine tests successfully. On the historical QP/C++ 7.3.2 QM model, the delivery inspector reported **SUPPORTED** for `HUNGRY` and `TIMEOUT`, but **UNDETERMINED** for `DONE` and `EAT` because it did not recognize the receiver subscriptions.
+
+Inspection of the uploaded XML established the cause: `subscribe(EAT_SIG)` in `Philo` and `subscribe(DONE_SIG)` in `Table` occur inside QM `<action>` elements. The original source-block collector did not include that element type. This was an **inspector coverage defect**, not evidence of missing DPP subscriptions.
+
+The source-block collector now includes `action`, and the synthetic regression fixture represents subscriptions in nested `<initial><action>...` nodes. **The corrected version awaits a new user-side test run** before we claim all four edges supported on the reference model.
