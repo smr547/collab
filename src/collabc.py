@@ -321,7 +321,7 @@ def generate_puml(model: Model, source_name: str) -> str:
         f"' GENERATED from {source_name}; do not edit by hand.",
         f"title {model.title}",
         "",
-        "skinparam linetype ortho",
+        "skinparam linetype polyline",
         "top to bottom direction",
         "",
     ]
