@@ -1,6 +1,6 @@
 # DPP model inspection — Report 001
 
-**Status:** Experimental — provenance established; first inspection run reproduced by user; delivery-pattern implementation awaiting user-side test.
+**Status:** Complete — experimental findings recorded; DSL extension proposed separately in [ADR-0015](../../docs/Decisions/ADR-0015-external-actors-and-system-boundary-interactions.md).
 
 ## Inputs
 
@@ -15,7 +15,7 @@ The user supplied the verified historical `dpp.qm` directly for inspection. The 
 
 Its root declares `<model version="5.3.0" links="1">`. This fingerprint identifies the uploaded inspection input; the independently reported byte comparison establishes its relationship to the QP/C++ 7.3.2 archive.
 
-## Preliminary observations (not yet validated findings)
+## Preliminary observations (historical investigation notes)
 
 - The QM model declares `Philo` and `Table` active-object classes.
 - `Philo` subscribes to `EAT_SIG` and `TEST_SIG`; `Table` subscribes to `DONE_SIG`, `PAUSE_SIG`, `SERVE_SIG` and `TEST_SIG`.
@@ -24,7 +24,7 @@ Its root declares `<model version="5.3.0" links="1">`. This fingerprint identifi
 - `Philo` has `DONE` handlers despite not subscribing to `DONE_SIG`. These handlers assert that any received `DONE` event is for another philosopher; this is not evidence of an incorrect route. A handler's existence does not imply that an event is delivered to it.
 - `TIMEOUT_SIG` is bound to `Philo::m_timeEvt`.
 
-These are observations of the QM source. Classification against the collaboration contract is still pending.
+These observations preceded the executable inspection passes; their results are recorded below.
 
 ## Method
 
@@ -32,7 +32,7 @@ Compare only the `.collab` and `.qm` source models in the first inspection pass.
 
 ## Findings
 
-_No cross-model findings have been established yet. In particular, earlier discussion of possible `DONE_SIG` handler discrepancies remains a hypothesis to investigate, not a validated defect._
+The completed findings and scope limitations are consolidated in the conclusion below. The following sections preserve the sequence of experimental passes and their earlier provisional interpretations.
 
 ## Signal-by-signal comparison — inspection pass 1
 
@@ -62,11 +62,11 @@ The `.collab` model uses signal names without `_SIG`; the QM model uses `*_SIG` 
 - **V5 — Coverage boundary:** distinguish undeclared signals from definite contract violations until the contract's completeness policy is specified.
 - **V6 — Evidence reporting:** for every result, retain XML element, code fragment, rule, assumptions and confidence/status.
 
-## Next steps
+## Original investigation plan (completed)
 
-1. Commit/identify the exact `DPP.collab` input.
+1. Identify the exact `DPP.collab` input.
 2. Inspect the verified QM source and capture specific state/handler/action evidence.
-3. Produce a structured inspection matrix before implementing the executable validator.
+3. Produce a structured inspection matrix and implement bounded executable checks.
 
 ## Executable inspection results — first pass (user-run)
 
@@ -147,3 +147,40 @@ The user reproduced **14 passing tests**. The first signal inventory reported 10
 Three of the six reported absent identifiers were **enum sentinels** (`Q_USER_SIG`, `MAX_PUB_SIG`, `MAX_SIG`), not application communication signals. The inventory has been corrected to exclude these sentinels from the `AppSignals` scan, with regression assertions.
 
 Expected application signal totals on this QM input: **7 signal identities**; **4 represented in the collaboration** (`HUNGRY`, `DONE`, `EAT`, `TIMEOUT`); **3 not represented** (`PAUSE`, `SERVE`, `TEST`). The reverse inventory remains **4 recognized routes covered, 0 additional complete routes recognized**. These totals are not a completeness proof; the three extra signal identities require source-boundary investigation. Corrected output awaits user-side execution.
+
+
+## Conclusion — Report 001 complete (16 October 2026)
+
+**Result:** The original four collaboration routes have supporting source-pattern evidence in the historical QM file: `HUNGRY` (direct POST), `DONE` and `EAT` (publish/subscribe), and `TIMEOUT` (time-event binding). Reverse QM inspection discovers four covered routes and no additional complete routes *within its recognized patterns*. This is not an exhaustive proof of the application.
+
+**Reproduced by the user:** On branch `feature/dpp-model-inspection`, after pulling commit `9c5d8b9`, `python3 -m unittest discover -s tests -p 'test_qm_*.py'` completed **14 tests, OK**. The historical-model invocation
+
+```bash
+python3 src/collabc.py examples/DPP.collab \
+  --qm ~/qp_old/qpcpp/examples/arm-cm/dpp_nucleo-l152re/dpp.qm \
+  --qm-map Philosopher=Philo \
+  --qm-signals --qm-reverse --check
+```
+
+reported **0 MISSING** in pass 1 (3 PARTIAL, 1 UNDETERMINED); an application-signal inventory of **7 signal identities**, **4 represented** and **3 not represented** (`PAUSE_SIG`, `SERVE_SIG`, `TEST_SIG`); and reverse inventory **4 COVERED, 0 UNDECLARED, 0 UNRESOLVED**. The corrected inventory excludes the enum sentinels `Q_USER_SIG`, `MAX_PUB_SIG` and `MAX_SIG`. Earlier “awaiting execution” statements in the chronological sections above are superseded by these results. A separate earlier user run of `--qm-delivery` supported all four contract routes.
+
+### Evidence beyond QM: BSP and QSpy
+
+The public QP/C++ 7.3.2 NUCLEO-L152RE **QV** `qv/bsp.cpp` shows B1 (PC13) sampled and debounced in `SysTick_Handler`. Depressing B1 publishes a static `PAUSE_SIG` event; releasing it publishes `SERVE_SIG`. Table subscribes to both. The BSP also directly posts a static `TEST_SIG` event to `AO_Table` from `EXTI9_5_IRQHandler`. The supplied file does not establish what stimulates that interrupt; no TEST runtime delivery was observed. Philosopher's subscription to TEST does not imply this direct-posted TEST reaches Philosopher.
+
+The user's QSpy trace establishes, for one observed execution:
+
+| Input / signal | Runtime evidence | HSM result |
+| --- | --- | --- |
+| B1 pressed / PAUSE_SIG | SysTick publication, post to Table, queue get and dispatch | `Table::serving -> Table::paused`; `PAUSED_STAT 1` |
+| B1 released / SERVE_SIG | SysTick publication, post to Table, queue get and dispatch | `Table::paused -> Table::serving`; `PAUSED_STAT 0` |
+
+While paused, Table continued to dispatch HUNGRY and DONE events; pausing Table does not halt every AO. QSpy instrumentation timestamps for publication and post are not strictly ordered in the displayed trace, so a future runtime correlator must not rely solely on printed timestamp monotonicity. These observations corroborate the BSP-originated routes but do not establish exhaustive behaviour.
+
+### Architectural finding and disposition
+
+**QM is not the whole executable system boundary.** Human interaction with B1 is translated by BSP/SysTick into application signals absent from the QM-only communication inventory. This is a source-coverage limitation of the inspection approach and a concrete motivation for expanding the `collab` language's modelling scope. It is **not** a validated defect in QM or the current `DPP.collab`.
+
+[ADR-0015 — External Actors and System-Boundary Interactions](../../docs/Decisions/ADR-0015-external-actors-and-system-boundary-interactions.md) records the proposed architectural direction without prescribing DSL syntax. Report 002 should evaluate actor/input/BSP/ISR representation and multi-source validation. The authoritative `examples/DPP.collab` is unchanged.
+
+**Limits:** The QM inspectors use bounded source-pattern matching, not a full C++ parser or formal proof. QSpy proves only observed execution paths. This report records user-run tests and traces; no independent hardware test was executed by the report author.
