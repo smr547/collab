@@ -11,7 +11,7 @@ The independently authored `examples/DPP.collab` describes three AO-to-AO signal
 
 The NUCLEO-L152RE QV `qv/bsp.cpp` samples button B1 on PC13 in `SysTick_Handler`, debounces it, and publishes `PAUSE_SIG` on depression and `SERVE_SIG` on release. Table subscribes to both. QSpy traces supplied during Report 001 confirm publication, queue posting, retrieval, dispatch and Table transitions `serving -> paused` and `paused -> serving`. The same BSP directly posts `TEST_SIG` from `EXTI9_5_IRQHandler` to Table; its actual trigger and runtime occurrence were not established. A QM subscription by Philosopher to TEST does not establish a BSP-to-Philosopher delivery route.
 
-These findings establish a coverage boundary in the current DSL and QM-only validator: the system includes human-initiated and BSP-originated interactions absent from the original collaboration contract and QM behavioural model.
+These findings establish a coverage boundary in the current DSL and QM-only validator: the system includes human-initiated and BSP-originated interactions absent from the original collaboration contract and partially absent from the QM behavioural model.
 
 ## Decision (proposed)
 
