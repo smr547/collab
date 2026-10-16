@@ -16,6 +16,7 @@ SUBSCRIBE = re.compile(r"\bsubscribe\s*\(\s*" + SIGNAL + r"\s*\)")
 ALLOCATE = re.compile(r"\bQ_NEW\s*\(\s*\w+\s*,\s*" + SIGNAL + r"\b")
 TIMER = re.compile(r"\bm_timeEvt\s*\(\s*this\s*,\s*" + SIGNAL + r"\s*,")
 ENUM = re.compile(r"\b" + SIGNAL + r"\b")
+ENUM_SENTINELS = {"Q_USER_SIG", "MAX_PUB_SIG", "MAX_SIG"}
 
 
 def signal_inventory(root):
@@ -28,7 +29,8 @@ def signal_inventory(root):
     for attr in root.iter("attribute"):
         if attr.get("name") == "AppSignals":
             for sig in ENUM.findall(" ".join(attr.itertext())):
-                evidence[sig]["declared"].add("<model>")
+                if sig not in ENUM_SENTINELS:
+                    evidence[sig]["declared"].add("<model>")
     for node in root.iter("class"):
         name = node.get("name")
         if not name:
@@ -62,7 +64,9 @@ def inspect_signals(model, qm_path, aliases):
             if kinds.get(kind):
                 parts.append(f"{kind}={','.join(sorted(kinds[kind]))}")
         print(f"SIGNAL: {sig}: {coverage}; " + "; ".join(parts))
-    print(f"QM signal inventory: {len(evidence)} signal(s), "
-          f"{sum(sig not in contract for sig in evidence)} not in collaboration; "
-          "no source or boundary inferred from subscriptions")
+    absent = sorted(sig for sig in evidence if sig not in contract)
+    print(f"QM application-signal inventory: {len(evidence)} signal(s); "
+          f"{len(evidence) - len(absent)} represented in collaboration; "
+          f"{len(absent)} not represented ({', '.join(absent) or 'none'}); "
+          "these are signal identities, not additional proven routes")
     return evidence
