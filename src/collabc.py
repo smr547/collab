@@ -327,12 +327,16 @@ def generate_puml(model: Model, source_name: str) -> str:
 
     for ao in model.aos:
         if model.roles.get(ao) == "TIMER":
-            # Clock glyph is presentation only; cadence is descriptive, not executable.
-            label = f"◷ <b>{ao}</b>"
+            # Timers are event sources, not AOs. Keep their participant
+            # symbols compact; descriptive cadence belongs in a separate note.
+            out.append(f'component "{ao}" as {ao} <<Timer>>')
             if ao in model.timer_cadences:
-                cadence = model.timer_cadences[ao].replace('"', "'").replace("\\n", " ")
-                label += f"\\n{cadence}"
-            out.append(f'component "{label}" as {ao} <<TIMER>>')
+                cadence = model.timer_cadences[ao].replace("\\n", " ").replace("\\r", " ")
+                # Escape PlantUML note markup and keep each description on one line.
+                cadence = cadence.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                out.append(f"note right of {ao}")
+                out.append(f"  {cadence}")
+                out.append("end note")
         else:
             out.append(f'component "{ao}" as {ao} <<{model.roles.get(ao, "AO")}>>')
 
