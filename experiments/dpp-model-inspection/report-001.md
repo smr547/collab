@@ -177,6 +177,23 @@ The user's QSpy trace establishes, for one observed execution:
 
 While paused, Table continued to dispatch HUNGRY and DONE events; pausing Table does not halt every AO. QSpy instrumentation timestamps for publication and post are not strictly ordered in the displayed trace, so a future runtime correlator must not rely solely on printed timestamp monotonicity. These observations corroborate the BSP-originated routes but do not establish exhaustive behaviour.
 
+### QSpy as an independent collaboration-validation input
+
+The B1 experiment reveals an additional use for QSpy beyond corroborating source inspection: **a validator can compare an observed QSpy execution trace directly with the `.collab` communication contract, without needing the QM model or BSP source as inputs**. For example, the captured `PAUSE_SIG` and `SERVE_SIG` publications and Table deliveries are not declared in the original four-route `examples/DPP.collab`. A trace-only inspection could therefore flag them as **observed but undeclared** communication, prompting a review of the contract's intended system boundary. It should not automatically label them implementation defects.
+
+A candidate trace-only classification is:
+
+| Trace/contract relationship | Interpretation |
+| --- | --- |
+| Declared and observed | Supported for the recorded execution, not universally proven |
+| Observed but undeclared | Unexpected relative to the contract; investigate model scope and event provenance |
+| Declared but unobserved | Not exercised or not visible in this trace; not evidence of absence |
+| Attribution or coverage uncertain | Undetermined; do not infer an endpoint or violation |
+
+A future validator must resolve QSpy signal and object dictionaries, distinguish publication from per-recipient delivery, avoid treating publisher identity and eventual recipient as interchangeable, and account for incomplete/filtered traces. The recorded `QF-Pub` and `AO-Post` timestamps are not strictly ordered in the displayed output, so timestamp monotonicity alone is insufficient for correlation. In particular, a `QF-Pub` record does not establish every subscriber's delivery; the observed Table `AO-Post`/`AO-GetL` records supply separate evidence.
+
+**Disposition:** This is an experimentally motivated validator capability, **not an implemented or tested trace validator**. Report 002 may use the unchanged `DPP.collab` and the captured QSpy trace to prototype detection of PAUSE/SERVE as undeclared routes, then evaluate how a boundary-aware model changes the result.
+
 ### Architectural finding and disposition
 
 **QM is not the whole executable system boundary.** Human interaction with B1 is translated by BSP/SysTick into application signals absent from the QM-only communication inventory. This is a source-coverage limitation of the inspection approach and a concrete motivation for expanding the `collab` language's modelling scope. It is **not** a validated defect in QM or the current `DPP.collab`.
