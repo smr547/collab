@@ -69,7 +69,7 @@ end
         self.assertIn("//   SourceTwoAO -> ReceiverAO", hpp)
 
     def test_same_signal_different_receivers_is_legal(self):
-        source = """\\
+        source = """
 collab 1
 ao SourceOneAO
 ao SourceTwoAO
