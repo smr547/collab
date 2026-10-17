@@ -432,11 +432,8 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
         for node in root.iter("class")
         if node.get("name")
     }
-    signals = set()
-    for attr in root.iter("attribute"):
-        if attr.get("name") == "AppSignals":
-            source = attr.findtext("code") or ""
-            signals.update(re.findall(r"\b([A-Z][A-Z0-9_]*_SIG)\b", source))
+    from qm_signals import declared_signals
+    signals = declared_signals(root)
 
     failures = 0
     unknown = 0
@@ -458,7 +455,7 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
             qm_signal = signal + "_SIG"
             if qm_signal not in signals:
                 print(f"MISSING: {sender}->{receiver} {signal}: "
-                      f"{qm_signal} not declared in QM AppSignals")
+                      f"{qm_signal} not found in supported QM signal declarations")
                 failures += 1
                 continue
             receiver_class = classes[mapped_receiver]
@@ -486,7 +483,7 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
         qm_signal = signal + "_SIG"
         if qm_signal not in signals:
             print(f"MISSING: {sender}->{receiver} {signal}: "
-                  f"{qm_signal} not declared in QM AppSignals")
+                  f"{qm_signal} not found in supported QM signal declarations")
             failures += 1
             continue
         receiver_class = classes[mapped_receiver]
