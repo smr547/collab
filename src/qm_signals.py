@@ -36,14 +36,14 @@ def declared_signals(root):
     for file_node in root.iter("file"):
         for text_node in file_node.findall("text"):
             source = "".join(text_node.itertext())
-            source = re.sub(r"/\\*.*?\\*/|//[^\\n]*", "", source, flags=re.S)
+            source = re.sub(r"/\*.*?\*/|//[^\n]*", "", source, flags=re.S)
             for match in re.finditer(
-                r"\\benum\\s+[A-Za-z_]\\w*\\s*(?::\\s*[^{};]+)?\\s*\\{([^{}]*)\\}",
+                r"\benum\s+[A-Za-z_]\w*\s*(?::\s*[^{};]+)?\s*\{([^{}]*)\}",
                 source, flags=re.S,
             ):
                 for entry in match.group(1).split(","):
                     entry = entry.strip()
-                    identifier = re.match(r"([A-Za-z_]\\w*)\\s*(?:=|$)", entry)
+                    identifier = re.match(r"([A-Za-z_]\w*)\s*(?:=|$)", entry)
                     if identifier and identifier.group(1).endswith("_SIG"):
                         declared.add(identifier.group(1))
     return declared - ENUM_SENTINELS
