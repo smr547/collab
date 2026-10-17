@@ -19,6 +19,36 @@ ENUM = re.compile(r"\b" + SIGNAL + r"\b")
 ENUM_SENTINELS = {"Q_USER_SIG", "MAX_PUB_SIG", "MAX_SIG"}
 
 
+def declared_signals(root):
+    """Find signal enumerators in supported QM model declarations.
+
+    Legacy AppSignals attributes can contain an enumerator fragment rather than
+    a complete C++ enum. File templates must contain an actual enum definition;
+    references in comments, actions, and other template text do not declare signals.
+    """
+    declared = set()
+    for attr in root.iter("attribute"):
+        if attr.get("name") == "AppSignals":
+            source = attr.findtext("code") or ""
+            # Preserve the historical QM AppSignals attribute convention.
+            declared.update(ENUM.findall(source))
+
+    for file_node in root.iter("file"):
+        for text_node in file_node.findall("text"):
+            source = "".join(text_node.itertext())
+            source = re.sub(r"/\\*.*?\\*/|//[^\\n]*", "", source, flags=re.S)
+            for match in re.finditer(
+                r"\\benum\\s+[A-Za-z_]\\w*\\s*(?::\\s*[^{};]+)?\\s*\\{([^{}]*)\\}",
+                source, flags=re.S,
+            ):
+                for entry in match.group(1).split(","):
+                    entry = entry.strip()
+                    identifier = re.match(r"([A-Za-z_]\\w*)\\s*(?:=|$)", entry)
+                    if identifier and identifier.group(1).endswith("_SIG"):
+                        declared.add(identifier.group(1))
+    return declared - ENUM_SENTINELS
+
+
 def signal_inventory(root):
     """Return mapping signal -> categories -> QM class names.
 
@@ -26,11 +56,8 @@ def signal_inventory(root):
     AppSignals enumeration is model-wide, hence marker '<model>'.
     """
     evidence = defaultdict(lambda: defaultdict(set))
-    for attr in root.iter("attribute"):
-        if attr.get("name") == "AppSignals":
-            for sig in ENUM.findall(" ".join(attr.itertext())):
-                if sig not in ENUM_SENTINELS:
-                    evidence[sig]["declared"].add("<model>")
+    for sig in declared_signals(root):
+        evidence[sig]["declared"].add("<model>")
     for node in root.iter("class"):
         name = node.get("name")
         if not name:
