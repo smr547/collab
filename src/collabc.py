@@ -104,10 +104,7 @@ def parse_model(path: Path) -> Model:
 
     seen_aos = set()
     seen_pairs = set()
-    # Signal identity is receiver-centric. The same semantic signal may arrive
-    # at one receiver over multiple routes, but reusing the same name for a
-    # different receiver is rejected (ADR-0003).
-    seen_signals = {}  # signal -> (receiver, first_line)
+    # Signal identity is global; each flow separately rejects duplicate entries.
 
     lines = path.read_text(encoding="utf-8").splitlines()
 
@@ -141,7 +138,7 @@ def parse_model(path: Path) -> Model:
                 model.title = " ".join(parts[1:])
                 continue
 
-            if stripped.startswith(("ao ", "isr ", "external ", "timer ")):
+            if stripped.startswith(("ao ", "hsm ", "isr ", "external ", "timer ")):
                 if stripped.startswith("timer "):
                     try:
                         parts = shlex.split(stripped)
@@ -162,7 +159,7 @@ def parse_model(path: Path) -> Model:
                     continue
                 parts = stripped.split()
                 if len(parts) != 2:
-                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>', 'isr <Name>' or 'external <Name>'")
+                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>', 'hsm <Name>', 'isr <Name>' or 'external <Name>'")
                 role = parts[0].upper()
                 name = parts[1]
                 if not AO_RE.match(name):
@@ -267,18 +264,6 @@ def parse_model(path: Path) -> Model:
                 f"{path}:{idx}: duplicate signal '{signal}' in flow "
                 f"{current_flow.sender}->{current_flow.receiver}"
             )
-
-        if signal in seen_signals:
-            receiver, first_line = seen_signals[signal]
-            if receiver != current_flow.receiver:
-                raise ModelError(
-                    f"{path}:{idx}: signal '{signal}' is already defined "
-                    f"for receiver '{receiver}' at line {first_line}; "
-                    f"cannot also use it for receiver "
-                    f"'{current_flow.receiver}'"
-                )
-        else:
-            seen_signals[signal] = (current_flow.receiver, idx)
 
         current_flow.signals.append(signal)
 
