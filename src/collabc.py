@@ -141,7 +141,7 @@ def parse_model(path: Path) -> Model:
                 model.title = " ".join(parts[1:])
                 continue
 
-            if stripped.startswith(("ao ", "isr ", "timer ")):
+            if stripped.startswith(("ao ", "isr ", "external ", "timer ")):
                 if stripped.startswith("timer "):
                     try:
                         parts = shlex.split(stripped)
@@ -162,7 +162,7 @@ def parse_model(path: Path) -> Model:
                     continue
                 parts = stripped.split()
                 if len(parts) != 2:
-                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>' or 'isr <Name>'")
+                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>', 'isr <Name>' or 'external <Name>'")
                 role = parts[0].upper()
                 name = parts[1]
                 if not AO_RE.match(name):
@@ -321,13 +321,15 @@ def generate_puml(model: Model, source_name: str) -> str:
         f"' GENERATED from {source_name}; do not edit by hand.",
         f"title {model.title}",
         "",
-        "skinparam linetype ortho",
+        "skinparam linetype polyline",
         "top to bottom direction",
         "",
     ]
 
     for ao in model.aos:
-        if model.roles.get(ao) == "TIMER":
+        if model.roles.get(ao) == "EXTERNAL":
+            out.append(f'actor "{ao}" as {ao}')
+        elif model.roles.get(ao) == "TIMER":
             # Timers are event sources, not AOs. Keep their participant
             # symbols compact; descriptive cadence belongs in a separate note.
             out.append(f'component "{ao}" as {ao} <<Timer>>')
@@ -460,6 +462,34 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
             print(f"UNDETERMINED: {sender}->{receiver} {signal}: "
                   "timer binding/delivery is not checked in pass 1")
             unknown += 1
+            continue
+        if model.roles.get(sender) == "EXTERNAL":
+            if mapped_receiver not in classes:
+                print(f"UNDETERMINED: {sender}->{receiver} {signal}: "
+                      f"QM receiver identity unresolved: {mapped_receiver}; "
+                      "external sender is not expected to be a QM class")
+                unknown += 1
+                continue
+            qm_signal = signal + "_SIG"
+            if qm_signal not in signals:
+                print(f"MISSING: {sender}->{receiver} {signal}: "
+                      f"{qm_signal} not declared in QM AppSignals")
+                failures += 1
+                continue
+            receiver_class = classes[mapped_receiver]
+            triggers = {
+                name.strip().removesuffix("_SIG")
+                for transition in receiver_class.iter("tran")
+                for name in (transition.get("trig") or "").split(",")
+            }
+            if signal not in triggers:
+                print(f"MISSING: {sender}->{receiver} {signal}: "
+                      f"no {signal} trigger in QM class {mapped_receiver}")
+                failures += 1
+            else:
+                print(f"PARTIAL: {sender}->{receiver} {signal}: "
+                      f"{qm_signal} declared and {mapped_receiver} handles {signal}; "
+                      "external origin and delivery not checked")
             continue
         if mapped_sender not in classes or mapped_receiver not in classes:
             absent = [name for name in (mapped_sender, mapped_receiver)

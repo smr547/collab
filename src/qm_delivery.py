@@ -80,6 +80,12 @@ def inspect_delivery(model, qm_path, aliases):
                         print(f"UNDETERMINED: {prefix}: no recognized QTimeEvt binding")
                         unknown += 1
                     continue
+                if model.roles.get(sender) == "EXTERNAL":
+                    print(f"UNDETERMINED: {prefix}: external origin/delivery "
+                          "requires BSP/source or runtime evidence; "
+                          "QM receiver alone cannot establish the route")
+                    unknown += 1
+                    continue
                 source = classes.get(source_name)
                 if source is None:
                     print(f"UNDETERMINED: {prefix}: QM sender identity unresolved")
