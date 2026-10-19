@@ -301,53 +301,95 @@ def puml_arrow(collab: Collaboration) -> str:
 
 
 def generate_puml(model: Model, source_name: str) -> str:
+    """Render a compact collaboration diagram with local timer occurrences.
+
+    A timer remains one semantic participant, even when drawn beside multiple
+    recipients. Timer details live in the legend; directed non-timer links
+    need only their signal names. Bidirectional links name each receiver.
+    """
     out = [
         "@startuml",
         f"' GENERATED from {source_name}; do not edit by hand.",
+        "' Timer aliases are graphical occurrences of one logical participant.",
         f"title {model.title}",
-        "",
         "skinparam linetype polyline",
+        "skinparam shadowing false",
         "top to bottom direction",
-        "",
+        "skinparam usecase {",
+        "  BackgroundColor White",
+        "  BorderColor #666666",
+        "}",
     ]
 
-    for ao in model.aos:
-        if model.roles.get(ao) == "EXTERNAL":
-            out.append(f'actor "{ao}" as {ao}')
-        elif model.roles.get(ao) == "TIMER":
-            # Timers are event sources, not AOs. Keep their participant
-            # symbols compact; descriptive cadence belongs in a separate note.
-            out.append(f'component "{ao}" as {ao} <<Timer>>')
-            if ao in model.timer_cadences:
-                cadence = model.timer_cadences[ao].replace("\\n", " ").replace("\\r", " ")
-                # Escape PlantUML note markup and keep each description on one line.
-                cadence = cadence.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-                out.append(f"note right of {ao}")
-                out.append(f"  {cadence}")
-                out.append("end note")
+    timer_links = [c for c in model.collaborations
+                   if model.roles.get(c.a) == "TIMER"
+                   or model.roles.get(c.b) == "TIMER"]
+    ordinary_links = [c for c in model.collaborations if c not in timer_links]
+
+    # Declare participants in the same role-group order as the J experiment.
+    for name in model.aos:
+        if model.roles.get(name) == "EXTERNAL":
+            out.append(f'actor "{name}" as {name}')
+
+    timer_occurrences = []
+    for name in model.aos:
+        if model.roles.get(name) != "TIMER":
+            continue
+        links = [c for c in timer_links if name in (c.a, c.b)]
+        for c in links:
+            receiver = c.b if c.a == name else c.a
+            alias = f"{name}__{receiver}" if len(links) > 1 else name
+            label = f"<b>T</b>\\n<size:9>{name}:</size>"
+            out.append(f'usecase "{label}" as {alias}')
+            timer_occurrences.append((name, receiver, alias, c))
+
+    for name in model.aos:
+        role = model.roles.get(name, "AO")
+        if role in ("EXTERNAL", "TIMER"):
+            continue
+        label = f"<size:17><b>{name}</b></size>" if role == "AO" else name
+        out.append(f'component "{label}" as {name} <<{role}>>')
+
+    if timer_occurrences:
+        out.extend(["", "legend bottom", "  |= Timer |= Behaviour |= Signal posted |"])
+        seen = set()
+        for name, _receiver, _alias, c in timer_occurrences:
+            if name in seen:
+                continue
+            seen.add(name)
+            cadence = model.timer_cadences.get(name, "")
+            signals = list(dict.fromkeys(sig for link in timer_links
+                                          if name in (link.a, link.b)
+                                          for flow in link.flows
+                                          if flow.sender == name
+                                          for sig in flow.signals))
+            out.append(f"  | <b>T</b> {name} | {cadence} | {', '.join(signals)} |")
+        out.append("endlegend")
+
+    out.append("")
+    for name, receiver, alias, c in timer_occurrences:
+        flow = c.flows[0]
+        if flow.sender == name:
+            out.append(f"{alias} -right-> {receiver}")
         else:
-            label = f"<size:17><b>{ao}</b></size>" if model.roles.get(ao, "AO") == "AO" else ao
-            out.append(f'component "{label}" as {ao} <<{model.roles.get(ao, "AO")}>>')
+            out.append(f"{receiver} -left-> {alias}")
 
     out.append("")
-
-    for collab in model.collaborations:
-        arrow = puml_arrow(collab)
-        out.append(f"{collab.a} {arrow} {collab.b}")
+    for collab in ordinary_links:
+        out.append(f"{collab.a} {puml_arrow(collab)} {collab.b}")
         out.append("note on link")
-        for n, flow in enumerate(collab.flows):
-            if n:
-                out.append("")
-            out.append(f"  {flow.sender} -> {flow.receiver}")
-            for sig in flow.signals:
-                out.append(f"    {sig}")
+        if len(collab.flows) == 1:
+            for signal in collab.flows[0].signals:
+                out.append(f"  {signal}")
+        else:
+            for flow in collab.flows:
+                out.append(f"  <b>-> {flow.receiver}</b>")
+                for signal in flow.signals:
+                    out.append(f"    {signal}")
         out.append("end note")
-        out.append("")
 
-    out.append("@enduml")
-    out.append("")
-    return "\n".join(out)
-
+    out.extend(["@enduml", ""])
+    return "\\n".join(out)
 
 def all_signals(model: Model):
     for collab in model.collaborations:
