@@ -332,9 +332,10 @@ def generate_puml(model: Model, source_name: str) -> str:
             out.append(f'actor "{name}" as {name}')
 
     timer_occurrences = []
-    for name in model.aos:
-        if model.roles.get(name) != "TIMER":
-            continue
+    timer_names = [name for name in model.aos if model.roles.get(name) == "TIMER"]
+    # Shared periodic timers first, then local one-shot timers.
+    timer_names.sort(key=lambda name: -sum(name in (c.a, c.b) for c in timer_links))
+    for name in timer_names:
         links = [c for c in timer_links if name in (c.a, c.b)]
         for c in links:
             receiver = c.b if c.a == name else c.a
