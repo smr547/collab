@@ -390,7 +390,7 @@ def generate_puml(model: Model, source_name: str) -> str:
         out.append("end note")
 
     out.extend(["@enduml", ""])
-    return "\\n".join(out)
+    return "\n".join(out)
 
 def all_signals(model: Model):
     for collab in model.collaborations:
