@@ -358,7 +358,7 @@ def generate_puml(model: Model, source_name: str) -> str:
             if name in seen:
                 continue
             seen.add(name)
-            cadence = model.timer_cadences.get(name, "")
+            cadence = (model.timer_cadences.get(name, "")\n                       .replace("&", "&amp;")\n                       .replace("<", "&lt;")\n                       .replace(">", "&gt;"))
             signals = list(dict.fromkeys(sig for link in timer_links
                                           if name in (link.a, link.b)
                                           for flow in link.flows
