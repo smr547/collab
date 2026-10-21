@@ -27,11 +27,11 @@ class TimerTests(unittest.TestCase):
         self.assertEqual(model.roles["SleepTimer"], "TIMER")
         self.assertEqual(model.timer_cadences["SleepTimer"], "One-shot; inactivity interval")
         puml = generate_puml(model, "timers.collab")
-        self.assertIn('component "SleepTimer" as SleepTimer <<Timer>>', puml)
-        self.assertIn("note right of SleepTimer\n  One-shot; inactivity interval\nend note", puml)
+        self.assertIn('usecase "<b>T</b>\\n<size:9>SleepTimer:</size>" as SleepTimer', puml)
+        self.assertIn("| <b>T</b> SleepTimer | One-shot; inactivity interval | CONSIDER_SLEEPING |", puml)
         self.assertNotIn("◷", puml)
         self.assertIn('component "<size:17><b>Control</b></size>" as Control <<AO>>', puml)
-        self.assertIn("SleepTimer --> Control", puml)
+        self.assertIn("SleepTimer -right-> Control", puml)
         self.assertIn("CONSIDER_SLEEPING_SIG", generate_signals_hpp(model, "timers.collab", "AppSignals", "MAX_APP_SIG"))
 
     def test_timer_without_cadence(self):
@@ -45,8 +45,8 @@ class TimerTests(unittest.TestCase):
 ''')
         self.assertNotIn("SleepTimer", model.timer_cadences)
         puml = generate_puml(model, "timers.collab")
-        self.assertIn('component "SleepTimer" as SleepTimer <<Timer>>', puml)
-        self.assertNotIn("note right of SleepTimer", puml)
+        self.assertIn('usecase "<b>T</b>\\n<size:9>SleepTimer:</size>" as SleepTimer', puml)
+        self.assertIn("| <b>T</b> SleepTimer |  | CONSIDER_SLEEPING |", puml)
 
     def test_cadence_note_escapes_markup(self):
         model = self.parse('''collab 1\nao Control\ntimer SleepTimer "One-shot; A < B & C > D"\ncollaboration SleepTimer Control\n  SleepTimer -> Control\n    CONSIDER_SLEEPING\nend\n''')
