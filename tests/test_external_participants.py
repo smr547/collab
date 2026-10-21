@@ -32,7 +32,7 @@ end
         self.assertIn('actor "User" as User', puml)
         self.assertIn('component "<size:17><b>Table</b></size>" as Table <<AO>>', puml)
         self.assertIn("User --> Table", puml)
-        self.assertIn("note on link\\n  PAUSE\\n  SERVE\\nend note", puml)
+        self.assertIn("note on link\n  PAUSE\n  SERVE\nend note", puml)
         header = generate_signals_hpp(model, "sample.collab", "AppSignals", "MAX_APP_SIG")
         self.assertIn("PAUSE_SIG = QP::Q_USER_SIG", header)
         self.assertIn("SERVE_SIG", header)
