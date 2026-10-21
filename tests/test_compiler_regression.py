@@ -44,7 +44,7 @@ class CompilerRegressionTests(unittest.TestCase):
         self.assertGreater(len(lines), 50)
         self.assertEqual(self.puml.count("@startuml"), 1)
         self.assertEqual(self.puml.count("@enduml"), 1)
-        self.assertNotIn(r"\\n@enduml", self.puml)
+        self.assertNotIn(r"\n@enduml", self.puml)
 
     def test_local_timer_occurrences_and_legend(self):
         self.assertEqual(self.puml.count('usecase "<b>T</b>'), 5)
@@ -59,15 +59,15 @@ class CompilerRegressionTests(unittest.TestCase):
 
     def test_bidirectional_collaborations_have_receiver_headings(self):
         for a, b in (("Ship", "Missile"), ("Ship", "Tunnel"), ("Tunnel", "Mine")):
-            self.assertIn(f"{a} <--> {b}\\nnote on link", self.puml)
+            self.assertIn(f"{a} <--> {b}\nnote on link", self.puml)
             self.assertIn(f"  <b>-> {a}</b>", self.puml)
             self.assertIn(f"  <b>-> {b}</b>", self.puml)
-        self.assertNotIn("Ship --> Tunnel\\nnote on link", self.puml)
-        self.assertNotIn("Tunnel --> Ship\\nnote on link", self.puml)
+        self.assertNotIn("Ship --> Tunnel\nnote on link", self.puml)
+        self.assertNotIn("Tunnel --> Ship\nnote on link", self.puml)
 
     def test_unidirectional_collaborations_use_signal_only_notes(self):
-        self.assertIn("Player --> Tunnel\\nnote on link\\n  PLAYER_TRIGGER\\n  PLAYER_QUIT\\nend note", self.puml)
-        self.assertIn("Mine --> Ship\\nnote on link\\n  HIT_MINE\\nend note", self.puml)
+        self.assertIn("Player --> Tunnel\nnote on link\n  PLAYER_TRIGGER\n  PLAYER_QUIT\nend note", self.puml)
+        self.assertIn("Mine --> Ship\nnote on link\n  HIT_MINE\nend note", self.puml)
         self.assertNotIn("  Player -> Tunnel", self.puml)
         self.assertNotIn("  Mine -> Ship", self.puml)
 
