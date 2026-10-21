@@ -1,0 +1,126 @@
+@startuml
+' GENERATED from flyNshoot.collab; do not edit by hand.
+title Fly N Shoot Collaboration example
+
+skinparam linetype polyline
+top to bottom direction
+
+actor "Player" as Player
+component "TickTimer" as TickTimer <<Timer>>
+note right of TickTimer
+  repeat; 30ms
+end note
+component "BlinkTimer" as BlinkTimer <<Timer>>
+note right of BlinkTimer
+  one-shot; 5s
+end note
+component "ScreenTimer" as ScreenTimer <<Timer>>
+note right of ScreenTimer
+  one-shot; 5s
+end note
+component "<size:17><b>Ship</b></size>" as Ship <<AO>>
+component "<size:17><b>Missile</b></size>" as Missile <<AO>>
+component "<size:17><b>Tunnel</b></size>" as Tunnel <<AO>>
+component "Mine" as Mine <<HSM>>
+
+BlinkTimer --> Tunnel
+note on link
+  BlinkTimer -> Tunnel
+    BLINK_TIMEOUT
+end note
+
+ScreenTimer --> Tunnel
+note on link
+  ScreenTimer -> Tunnel
+    SCREEN_TIMEOUT
+end note
+
+Player --> Tunnel
+note on link
+  Player -> Tunnel
+    PLAYER_TRIGGER
+    PLAYER_QUIT
+end note
+
+Player --> Ship
+note on link
+  Player -> Ship
+    PLAYER_SHIP_MOVE
+    PLAYER_TRIGGER
+end note
+
+TickTimer --> Ship
+note on link
+  TickTimer -> Ship
+    TIME_TICK
+end note
+
+TickTimer --> Missile
+note on link
+  TickTimer -> Missile
+    TIME_TICK
+end note
+
+TickTimer --> Tunnel
+note on link
+  TickTimer -> Tunnel
+    TIME_TICK
+end note
+
+Ship <--> Missile
+note on link
+  Ship -> Missile
+    MISSILE_FIRE
+
+  Missile -> Ship
+    DESTROYED_MINE
+end note
+
+Ship <--> Tunnel
+note on link
+  Ship -> Tunnel
+    SHIP_IMG
+    SCORE
+    EXPLOSION
+    GAME_OVER
+
+  Tunnel -> Ship
+    HIT_WALL
+    TAKE_OFF
+end note
+
+Missile --> Tunnel
+note on link
+  Missile -> Tunnel
+    MISSILE_IMG
+    EXPLOSION
+end note
+
+Tunnel <--> Mine
+note on link
+  Tunnel -> Mine
+    TIME_TICK
+    SHIP_IMG
+    MISSILE_IMG
+    MINE_PLANT
+    MINE_RECYCLE
+
+  Mine -> Tunnel
+    MINE_IMG
+    MINE_DISABLED
+    EXPLOSION
+end note
+
+Mine --> Missile
+note on link
+  Mine -> Missile
+    HIT_MINE
+end note
+
+Mine --> Ship
+note on link
+  Mine -> Ship
+    HIT_MINE
+end note
+
+@enduml

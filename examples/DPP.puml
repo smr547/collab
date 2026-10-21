@@ -1,0 +1,39 @@
+@startuml
+' GENERATED from DPP.collab; do not edit by hand.
+title Dining Philosophers Collaboration example
+
+skinparam linetype polyline
+top to bottom direction
+
+component "<size:17><b>Table</b></size>" as Table <<AO>>
+component "<size:17><b>Philosopher</b></size>" as Philosopher <<AO>>
+component "PhilosopherTimer" as PhilosopherTimer <<Timer>>
+note right of PhilosopherTimer
+  One-shot; thinking and eating random interval
+end note
+actor "User" as User
+
+User --> Table
+note on link
+  User -> Table
+    PAUSE
+    SERVE
+end note
+
+Philosopher <--> Table
+note on link
+  Philosopher -> Table
+    HUNGRY
+    DONE
+
+  Table -> Philosopher
+    EAT
+end note
+
+PhilosopherTimer --> Philosopher
+note on link
+  PhilosopherTimer -> Philosopher
+    TIMEOUT
+end note
+
+@enduml

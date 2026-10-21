@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1216px" preserveAspectRatio="none" style="width:1168px;height:1216px;" version="1.1" viewBox="0 0 1168 1216" width="1168px" zoomAndPan="magnify"><defs><filter height="300%" id="f1ss1vhatgd72m" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="295" x="444.5" y="19.2419">Fly N Shoot Collaboration example</text><!--MD5=[de2effd8dc5bf946a609466312d0f75f]
+entity Player--><ellipse cx="956.5" cy="42.0158" fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" rx="8" ry="8" style="stroke: #A80036; stroke-width: 1.5;"/><path d="M956.5,50.0158 L956.5,77.0158 M943.5,58.0158 L969.5,58.0158 M956.5,77.0158 L943.5,92.0158 M956.5,77.0158 L969.5,92.0158 " fill="none" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="41" x="936" y="112.4818">Player</text><!--MD5=[ccf032d005fd80ea5cb665ca7c6920f5]
+entity TickTimer--><rect fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" height="58.1358" style="stroke: #A80036; stroke-width: 1.5;" width="85" x="6" y="45.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="50.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="1" y="93.6517"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="50" x="23.5" y="70.4818">«Timer»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="65" x="16" y="89.5497">TickTimer</text><path d="M126.5,60.5158 L126.5,70.5158 L91.31,74.5158 L126.5,78.5158 L126.5,88.2219 A0,0 0 0 0 126.5,88.2219 L224.5,88.2219 A0,0 0 0 0 224.5,88.2219 L224.5,70.5158 L214.5,60.5158 L126.5,60.5158 A0,0 0 0 0 126.5,60.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M214.5,60.5158 L214.5,70.5158 L224.5,70.5158 L214.5,60.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="77" x="132.5" y="79.4129">repeat; 30ms</text><!--MD5=[e8b4f53b57718e68ac517bf05062ef05]
+entity BlinkTimer--><rect fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" height="58.1358" style="stroke: #A80036; stroke-width: 1.5;" width="92" x="450.5" y="550.0158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="445.5" y="555.0158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="445.5" y="598.1517"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="50" x="471.5" y="574.9818">«Timer»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="72" x="460.5" y="594.0497">BlinkTimer</text><path d="M577.5,565.0158 L577.5,575.0158 L542.51,579.0158 L577.5,583.0158 L577.5,592.7219 A0,0 0 0 0 577.5,592.7219 L671.5,592.7219 A0,0 0 0 0 671.5,592.7219 L671.5,575.0158 L661.5,565.0158 L577.5,565.0158 A0,0 0 0 0 577.5,565.0158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M661.5,565.0158 L661.5,575.0158 L671.5,575.0158 L661.5,565.0158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="73" x="583.5" y="583.9129">one-shot; 5s</text><!--MD5=[ad6a421632f73cd79be1417ef891559c]
+entity ScreenTimer--><rect fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" height="58.1358" style="stroke: #A80036; stroke-width: 1.5;" width="105" x="181" y="550.0158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="176" y="555.0158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="176" y="598.1517"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="50" x="208.5" y="574.9818">«Timer»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="85" x="191" y="594.0497">ScreenTimer</text><path d="M321.5,565.0158 L321.5,575.0158 L286.34,579.0158 L321.5,583.0158 L321.5,592.7219 A0,0 0 0 0 321.5,592.7219 L415.5,592.7219 A0,0 0 0 0 415.5,592.7219 L415.5,575.0158 L405.5,565.0158 L321.5,565.0158 A0,0 0 0 0 321.5,565.0158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M405.5,565.0158 L405.5,575.0158 L415.5,575.0158 L405.5,565.0158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="73" x="327.5" y="583.9129">one-shot; 5s</text><!--MD5=[eccd555a113519a8bb1556b196170dc9]
+entity Ship--><rect fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" height="62.2219" style="stroke: #A80036; stroke-width: 1.5;" width="56" x="717.5" y="253.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="712.5" y="258.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="712.5" y="305.7377"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="729.5" y="278.4818">«AO»</text><text fill="#000000" font-family="sans-serif" font-size="17" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="36" x="727.5" y="300.7567">Ship</text><!--MD5=[1e921338e712819dd71b098f37cd46fd]
+entity Missile--><rect fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" height="62.2219" style="stroke: #A80036; stroke-width: 1.5;" width="77" x="707" y="548.0158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="702" y="553.0158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="702" y="600.2377"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="729.5" y="572.9818">«AO»</text><text fill="#000000" font-family="sans-serif" font-size="17" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="57" x="717" y="595.2567">Missile</text><!--MD5=[5a561e135ecc611638d4020fb37541aa]
+entity Tunnel--><rect fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" height="62.2219" style="stroke: #A80036; stroke-width: 1.5;" width="78" x="354.5" y="807.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="349.5" y="812.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="349.5" y="859.7377"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="32" x="377.5" y="832.4818">«AO»</text><text fill="#000000" font-family="sans-serif" font-size="17" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="58" x="364.5" y="854.7567">Tunnel</text><!--MD5=[c23762f28d789c622e4789db4afc3965]
+entity Mine--><rect fill="#FEFECE" filter="url(#f1ss1vhatgd72m)" height="58.1358" style="stroke: #A80036; stroke-width: 1.5;" width="63" x="713" y="1147.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="708" y="1152.5158"/><rect fill="#FEFECE" height="5" style="stroke: #A80036; stroke-width: 1.5;" width="10" x="708" y="1195.6517"/><text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="43" x="723" y="1172.4818">«HSM»</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="34" x="727.5" y="1191.5497">Mine</text><!--MD5=[b9d723a2579a057b22abcca6802e85db]
+link BlinkTimer to Tunnel--><path d="M476.91,608.1558 C458.42,634.7258 433.5,670.5158 433.5,670.5158 C433.5,670.5158 390.5,700.5158 390.5,700.5158 C390.5,700.5158 390.5,777.5158 390.5,777.5158 C390.5,777.5158 391.08,789.2058 391.74,802.2658 " fill="none" id="BlinkTimer-&gt;Tunnel" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="392,807.5158,395.5587,798.3324,391.7574,802.5217,387.5681,798.7205,392,807.5158" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M395.5,714.5158 L395.5,759.5158 L537.5,759.5158 L537.5,724.5158 L527.5,714.5158 L395.5,714.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M527.5,714.5158 L527.5,724.5158 L537.5,724.5158 L527.5,714.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="121" x="401.5" y="733.4129">BlinkTimer -&gt; Tunnel</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="100" x="407.5" y="751.1189">BLINK_TIMEOUT</text><!--MD5=[bad8ef1baaee2e609ab8909d1cbc4ed9]
+link ScreenTimer to Tunnel--><path d="M229.28,608.2658 C223.96,643.8858 215.5,700.5158 215.5,700.5158 C215.5,700.5158 215.5,777.5158 215.5,777.5158 C215.5,777.5158 296.72,804.8958 349.43,822.6558 " fill="none" id="ScreenTimer-&gt;Tunnel" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="354.44,824.3458,347.1969,817.6722,349.7038,822.7433,344.6327,825.2502,354.44,824.3458" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M220.5,714.5158 L220.5,759.5158 L373.5,759.5158 L373.5,724.5158 L363.5,714.5158 L220.5,714.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M363.5,714.5158 L363.5,724.5158 L373.5,724.5158 L363.5,714.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="132" x="226.5" y="733.4129">ScreenTimer -&gt; Tunnel</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="110" x="232.5" y="751.1189">SCREEN_TIMEOUT</text><!--MD5=[7adfe7e7ba04ff3f4cf2adcea7492d9a]
+link Player to Tunnel--><path d="M977.33,96.0558 C998.59,117.0258 1028.5,146.5158 1028.5,146.5158 C1028.5,146.5158 1028.5,223.5158 1028.5,223.5158 C1028.5,223.5158 999.5,777.5158 999.5,777.5158 C999.5,777.5158 577.99,819.2458 438.05,833.1058 " fill="none" id="Player-&gt;Tunnel" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="432.79,833.6258,442.1363,836.7317,437.7663,833.1397,441.3584,828.7697,432.79,833.6258" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M1026.5,368.0158 L1026.5,431.0158 L1156.5,431.0158 L1156.5,378.0158 L1146.5,368.0158 L1026.5,368.0158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M1146.5,368.0158 L1146.5,378.0158 L1156.5,378.0158 L1146.5,368.0158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="95" x="1032.5" y="386.9129">Player -&gt; Tunnel</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="103" x="1038.5" y="404.6189">PLAYER_TRIGGER</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="82" x="1038.5" y="422.3249">PLAYER_QUIT</text><!--MD5=[42ef39540c972d2265e6e4529691489f]
+link Player to Ship--><path d="M935.67,90.9258 C907.44,111.8058 860.5,146.5158 860.5,146.5158 C860.5,146.5158 808.03,209.0258 773.97,249.5958 " fill="none" id="Player-&gt;Ship" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="770.74,253.4458,779.5904,249.1249,773.955,249.6165,773.4634,243.981,770.74,253.4458" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M865.5,151.5158 L865.5,214.5158 L1015.5,214.5158 L1015.5,161.5158 L1005.5,151.5158 L865.5,151.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M1005.5,151.5158 L1005.5,161.5158 L1015.5,161.5158 L1005.5,151.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="80" x="871.5" y="170.4129">Player -&gt; Ship</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="123" x="877.5" y="188.1189">PLAYER_SHIP_MOVE</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="103" x="877.5" y="205.8249">PLAYER_TRIGGER</text><!--MD5=[dd4dbc2510d57a59c9b2e43c39083802]
+link TickTimer to Ship--><path d="M90.2,103.5458 C100.92,110.7458 109.5,116.5158 109.5,116.5158 C109.5,116.5158 582.04,240.5958 712.49,274.8458 " fill="none" id="TickTimer-&gt;Ship" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="717.35,276.1258,709.6652,269.966,712.5148,274.8527,707.6281,277.7023,717.35,276.1258" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M507.5,160.5158 L507.5,205.5158 L628.5,205.5158 L628.5,170.5158 L618.5,160.5158 L507.5,160.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M618.5,160.5158 L618.5,170.5158 L628.5,170.5158 L618.5,160.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="100" x="513.5" y="179.4129">TickTimer -&gt; Ship</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="63" x="519.5" y="197.1189">TIME_TICK</text><!--MD5=[15c24c38d0b36b607cd8b3b0df201d78]
+link TickTimer to Missile--><path d="M81.64,103.7058 C132.12,146.6458 222.5,223.5158 222.5,223.5158 C222.5,223.5158 689.5,487.5158 689.5,487.5158 C689.5,487.5158 708.32,517.9358 724.14,543.4958 " fill="none" id="TickTimer-&gt;Missile" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="726.85,547.8758,725.5252,538.1165,724.2231,543.6215,718.7182,542.3195,726.85,547.8758" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M383.5,260.0158 L383.5,305.0158 L518.5,305.0158 L518.5,270.0158 L508.5,260.0158 L383.5,260.0158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M508.5,260.0158 L508.5,270.0158 L518.5,270.0158 L508.5,260.0158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="114" x="389.5" y="278.9129">TickTimer -&gt; Missile</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="63" x="395.5" y="296.6189">TIME_TICK</text><!--MD5=[0b8c286dbf9e4b0f97d59225e3c2b138]
+link TickTimer to Tunnel--><path d="M47.68,103.8358 C44.96,196.9158 36.5,487.5158 36.5,487.5158 C36.5,487.5158 36.5,670.5158 36.5,670.5158 C36.5,670.5158 84.5,777.5158 84.5,777.5158 C84.5,777.5158 263.99,812.3658 349.38,828.9458 " fill="none" id="TickTimer-&gt;Tunnel" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="354.36,829.9158,346.2907,824.269,349.4522,828.96,344.7613,832.1215,354.36,829.9158" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M46.5,377.0158 L46.5,422.0158 L182.5,422.0158 L182.5,387.0158 L172.5,377.0158 L46.5,377.0158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M172.5,377.0158 L172.5,387.0158 L182.5,387.0158 L172.5,377.0158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="115" x="52.5" y="395.9129">TickTimer -&gt; Tunnel</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="63" x="58.5" y="413.6189">TIME_TICK</text><!--MD5=[7d08f1e04d521e3c7ef283a0551bafba]
+link Ship to Missile--><path d="M743.74,320.7658 C743.08,333.8258 742.5,345.5158 742.5,345.5158 C742.5,345.5158 742.5,457.5158 742.5,457.5158 C742.5,457.5158 743.74,507.2158 744.62,542.7858 " fill="none" id="Ship-Missile" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="744.75,547.9158,748.5173,538.816,744.6215,542.9175,740.52,539.0216,744.75,547.9158" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="744,315.5158,739.5681,324.3112,743.7574,320.51,747.5587,324.6993,744,315.5158" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M747.5,350.5158 L747.5,448.5158 L884.5,448.5158 L884.5,360.5158 L874.5,350.5158 L747.5,350.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M874.5,350.5158 L874.5,360.5158 L884.5,360.5158 L874.5,350.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="83" x="753.5" y="369.4129">Ship -&gt; Missile</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="80" x="759.5" y="387.1189">MISSILE_FIRE</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="0" x="756.5" y="404.8249"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="83" x="753.5" y="422.5309">Missile -&gt; Ship</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="110" x="759.5" y="440.2369">DESTROYED_MINE</text><!--MD5=[f23773e0314858ca6f8537cc6c8fb921]
+link Ship to Tunnel--><path d="M711.96,295.1758 C572.34,335.4158 44.5,487.5158 44.5,487.5158 C44.5,487.5158 44.5,670.5158 44.5,670.5158 C44.5,670.5158 207.5,777.5158 207.5,777.5158 C207.5,777.5158 294.15,805.4658 349.16,823.2158 " fill="none" id="Ship-Tunnel" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="354.05,824.7958,346.6994,818.2408,349.2884,823.2704,344.2587,825.8594,354.05,824.7958" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="717.15,293.6858,707.3937,292.3391,712.3462,295.0727,709.6126,300.0252,717.15,293.6858" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M49.5,492.5158 L49.5,661.5158 L154.5,661.5158 L154.5,502.5158 L144.5,492.5158 L49.5,492.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M144.5,492.5158 L144.5,502.5158 L154.5,502.5158 L144.5,492.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="84" x="55.5" y="511.4129">Ship -&gt; Tunnel</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="60" x="61.5" y="529.1189">SHIP_IMG</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="40" x="61.5" y="546.8249">SCORE</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="71" x="61.5" y="564.5309">EXPLOSION</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="75" x="61.5" y="582.2369">GAME_OVER</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="0" x="58.5" y="599.9429"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="84" x="55.5" y="617.649">Tunnel -&gt; Ship</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="61" x="61.5" y="635.355">HIT_WALL</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="60" x="61.5" y="653.061">TAKE_OFF</text><!--MD5=[44babeb4da7296df264d43e77f1a8353]
+link Missile to Tunnel--><path d="M726.85,610.1558 C710.56,636.4758 689.5,670.5158 689.5,670.5158 C689.5,670.5158 586.5,700.5158 586.5,700.5158 C586.5,700.5158 550.5,777.5158 550.5,777.5158 C550.5,777.5158 483.87,802.9758 437.42,820.7258 " fill="none" id="Missile-&gt;Tunnel" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="432.71,822.5258,442.545,823.0486,437.3804,820.7405,439.6885,815.5759,432.71,822.5258" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M591.5,705.5158 L591.5,768.5158 L710.5,768.5158 L710.5,715.5158 L700.5,705.5158 L591.5,705.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M700.5,705.5158 L700.5,715.5158 L710.5,715.5158 L700.5,705.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="98" x="597.5" y="724.4129">Missile -&gt; Tunnel</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="79" x="603.5" y="742.1189">MISSILE_IMG</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="71" x="603.5" y="759.8249">EXPLOSION</text><!--MD5=[7d7d6ed05f74507c82e913874959aae5]
+link Tunnel to Mine--><path d="M416.48,873.8558 C466.23,948.2258 579.5,1117.5158 579.5,1117.5158 C579.5,1117.5158 659.17,1145.5258 707.79,1162.6158 " fill="none" id="Tunnel-Mine" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="712.69,1164.3358,705.5258,1157.5776,707.9729,1162.6777,702.8728,1165.1249,712.69,1164.3358" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="413.58,869.5358,415.2441,879.2431,416.3535,873.6961,421.9005,874.8055,413.58,869.5358" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M584.5,904.5158 L584.5,1108.5158 L709.5,1108.5158 L709.5,914.5158 L699.5,904.5158 L584.5,904.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M699.5,904.5158 L699.5,914.5158 L709.5,914.5158 L699.5,904.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="88" x="590.5" y="923.4129">Tunnel -&gt; Mine</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="63" x="596.5" y="941.1189">TIME_TICK</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="60" x="596.5" y="958.8249">SHIP_IMG</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="79" x="596.5" y="976.5309">MISSILE_IMG</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="79" x="596.5" y="994.2369">MINE_PLANT</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="91" x="596.5" y="1011.9429">MINE_RECYCLE</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="0" x="593.5" y="1029.649"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="88" x="590.5" y="1047.355">Mine -&gt; Tunnel</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="64" x="596.5" y="1065.061">MINE_IMG</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="98" x="596.5" y="1082.767">MINE_DISABLED</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="71" x="596.5" y="1100.473">EXPLOSION</text><!--MD5=[b27745c2849a2f76abaf92c31f2ebe72]
+link Mine to Missile--><path d="M744.55,1147.3258 C744.71,1049.4358 745.26,724.2758 745.44,615.6758 " fill="none" id="Mine-&gt;Missile" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="745.45,610.3658,741.45,619.3658,745.45,615.3658,749.45,619.3658,745.45,610.3658" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M749.5,814.0158 L749.5,859.0158 L857.5,859.0158 L857.5,824.0158 L847.5,814.0158 L749.5,814.0158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M847.5,814.0158 L847.5,824.0158 L857.5,824.0158 L847.5,814.0158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="87" x="755.5" y="832.9129">Mine -&gt; Missile</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="60" x="761.5" y="850.6189">HIT_MINE</text><!--MD5=[ed353aa1ac2a3455879496c0eb91b525]
+link Mine to Ship--><path d="M757.2,1147.1958 C763.8,1132.4758 770.5,1117.5158 770.5,1117.5158 C770.5,1117.5158 874.5,869.5158 874.5,869.5158 C874.5,869.5158 897.5,457.5158 897.5,457.5158 C897.5,457.5158 897.5,345.5158 897.5,345.5158 C897.5,345.5158 823.2,316.1858 778.5,298.5458 " fill="none" id="Mine-&gt;Ship" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="773.73,296.6558,780.6268,303.6867,778.3792,298.4956,783.5704,296.248,773.73,296.6558" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M888.5,714.5158 L888.5,759.5158 L982.5,759.5158 L982.5,724.5158 L972.5,714.5158 L888.5,714.5158 " fill="#FBFB77" filter="url(#f1ss1vhatgd72m)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M972.5,714.5158 L972.5,724.5158 L982.5,724.5158 L972.5,714.5158 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="73" x="894.5" y="733.4129">Mine -&gt; Ship</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="60" x="900.5" y="751.1189">HIT_MINE</text><!--MD5=[d1d4f828b71968e9e23c193e608e666f]
+@startuml
+title Fly N Shoot Collaboration example
+
+skinparam linetype polyline
+top to bottom direction
+
+actor "Player" as Player
+component "TickTimer" as TickTimer <<Timer>>
+note right of TickTimer
+  repeat; 30ms
+end note
+component "BlinkTimer" as BlinkTimer <<Timer>>
+note right of BlinkTimer
+  one-shot; 5s
+end note
+component "ScreenTimer" as ScreenTimer <<Timer>>
+note right of ScreenTimer
+  one-shot; 5s
+end note
+component "<size:17><b>Ship</b></size>" as Ship <<AO>>
+component "<size:17><b>Missile</b></size>" as Missile <<AO>>
+component "<size:17><b>Tunnel</b></size>" as Tunnel <<AO>>
+component "Mine" as Mine <<HSM>>
+
+BlinkTimer - -> Tunnel
+note on link
+  BlinkTimer -> Tunnel
+    BLINK_TIMEOUT
+end note
+
+ScreenTimer - -> Tunnel
+note on link
+  ScreenTimer -> Tunnel
+    SCREEN_TIMEOUT
+end note
+
+Player - -> Tunnel
+note on link
+  Player -> Tunnel
+    PLAYER_TRIGGER
+    PLAYER_QUIT
+end note
+
+Player - -> Ship
+note on link
+  Player -> Ship
+    PLAYER_SHIP_MOVE
+    PLAYER_TRIGGER
+end note
+
+TickTimer - -> Ship
+note on link
+  TickTimer -> Ship
+    TIME_TICK
+end note
+
+TickTimer - -> Missile
+note on link
+  TickTimer -> Missile
+    TIME_TICK
+end note
+
+TickTimer - -> Tunnel
+note on link
+  TickTimer -> Tunnel
+    TIME_TICK
+end note
+
+Ship <- -> Missile
+note on link
+  Ship -> Missile
+    MISSILE_FIRE
+
+  Missile -> Ship
+    DESTROYED_MINE
+end note
+
+Ship <- -> Tunnel
+note on link
+  Ship -> Tunnel
+    SHIP_IMG
+    SCORE
+    EXPLOSION
+    GAME_OVER
+
+  Tunnel -> Ship
+    HIT_WALL
+    TAKE_OFF
+end note
+
+Missile - -> Tunnel
+note on link
+  Missile -> Tunnel
+    MISSILE_IMG
+    EXPLOSION
+end note
+
+Tunnel <- -> Mine
+note on link
+  Tunnel -> Mine
+    TIME_TICK
+    SHIP_IMG
+    MISSILE_IMG
+    MINE_PLANT
+    MINE_RECYCLE
+
+  Mine -> Tunnel
+    MINE_IMG
+    MINE_DISABLED
+    EXPLOSION
+end note
+
+Mine - -> Missile
+note on link
+  Mine -> Missile
+    HIT_MINE
+end note
+
+Mine - -> Ship
+note on link
+  Mine -> Ship
+    HIT_MINE
+end note
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 21:22:07 AEDT 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.12.1+1-1-24.04.4-Ubuntu
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

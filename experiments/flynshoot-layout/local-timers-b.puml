@@ -1,0 +1,101 @@
+@startuml
+' EXPERIMENT B ONLY — based on experiment A; .collab is authoritative.
+' TickShip/TickMissile/TickTunnel are graphical aliases for ONE logical TickTimer.
+title Fly N Shoot — timer legend and local signals (experiment B)
+skinparam linetype polyline
+skinparam shadowing false
+top to bottom direction
+skinparam usecase {
+  BackgroundColor White
+  BorderColor #666666
+}
+actor "Player" as Player
+usecase "<b>T</b>\n<size:9>TickTimer:</size>" as TickShip
+usecase "<b>T</b>\n<size:9>TickTimer:</size>" as TickMissile
+usecase "<b>T</b>\n<size:9>TickTimer:</size>" as TickTunnel
+usecase "<b>T</b>\n<size:9>BlinkTimer:</size>" as BlinkTimer
+usecase "<b>T</b>\n<size:9>ScreenTimer:</size>" as ScreenTimer
+component "<size:17><b>Ship</b></size>" as Ship <<AO>>
+component "<size:17><b>Missile</b></size>" as Missile <<AO>>
+component "<size:17><b>Tunnel</b></size>" as Tunnel <<AO>>
+component "Mine" as Mine <<HSM>>
+
+' Single source of timer details, outside the relationship drawing.
+legend bottom
+  |= Timer |= Behaviour |= Signal posted |
+  | <b>T</b> TickTimer | repeat; 30ms | TIME_TICK |
+  | <b>T</b> BlinkTimer | one-shot; 5s | BLINK_TIMEOUT |
+  | <b>T</b> ScreenTimer | one-shot; 5s | SCREEN_TIMEOUT |
+endlegend
+
+' Short timer arrows; no duplicated route text or timer notes.
+TickShip -right-> Ship : TIME_TICK
+TickMissile -right-> Missile : TIME_TICK
+TickTunnel -right-> Tunnel : TIME_TICK
+BlinkTimer -right-> Tunnel : BLINK_TIMEOUT
+ScreenTimer -right-> Tunnel : SCREEN_TIMEOUT
+
+' Preserve all non-timer routes exactly as in experiment A.
+Player --> Tunnel
+note on link
+  Player -> Tunnel
+    PLAYER_TRIGGER
+    PLAYER_QUIT
+end note
+Player --> Ship
+note on link
+  Player -> Ship
+    PLAYER_SHIP_MOVE
+    PLAYER_TRIGGER
+end note
+Ship <--> Missile
+note on link
+  Ship -> Missile
+    MISSILE_FIRE
+
+  Missile -> Ship
+    DESTROYED_MINE
+end note
+Ship <--> Tunnel
+note on link
+  Ship -> Tunnel
+    SHIP_IMG
+    SCORE
+    EXPLOSION
+    GAME_OVER
+
+  Tunnel -> Ship
+    HIT_WALL
+    TAKE_OFF
+end note
+Missile --> Tunnel
+note on link
+  Missile -> Tunnel
+    MISSILE_IMG
+    EXPLOSION
+end note
+Tunnel <--> Mine
+note on link
+  Tunnel -> Mine
+    TIME_TICK
+    SHIP_IMG
+    MISSILE_IMG
+    MINE_PLANT
+    MINE_RECYCLE
+
+  Mine -> Tunnel
+    MINE_IMG
+    MINE_DISABLED
+    EXPLOSION
+end note
+Mine --> Missile
+note on link
+  Mine -> Missile
+    HIT_MINE
+end note
+Mine --> Ship
+note on link
+  Mine -> Ship
+    HIT_MINE
+end note
+@enduml

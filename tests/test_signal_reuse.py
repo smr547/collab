@@ -68,8 +68,8 @@ end
         self.assertIn("//   SourceOneAO -> ReceiverAO", hpp)
         self.assertIn("//   SourceTwoAO -> ReceiverAO", hpp)
 
-    def test_same_signal_different_receiver_is_rejected(self):
-        source = """\
+    def test_same_signal_different_receivers_is_legal(self):
+        source = """
 collab 1
 ao SourceOneAO
 ao SourceTwoAO
@@ -86,12 +86,17 @@ collaboration SourceTwoAO ReceiverTwoAO
     EVENT_READY
 end
 """
-        with self.assertRaises(collabc.ModelError) as ctx:
-            parse_source(source)
-        msg = str(ctx.exception)
-        self.assertIn("EVENT_READY", msg)
-        self.assertIn("ReceiverOneAO", msg)
-        self.assertIn("ReceiverTwoAO", msg)
+        model = parse_source(source)
+        self.assertEqual(
+            list(collabc.unique_signals(model)),
+            [("EVENT_READY", [("SourceOneAO", "ReceiverOneAO"),
+                              ("SourceTwoAO", "ReceiverTwoAO")])],
+        )
+        hpp = collabc.generate_signals_hpp(
+            model, "model.collab", "AppSignals", "MAX_APP_SIG")
+        self.assertEqual(hpp.count("EVENT_READY_SIG"), 1)
+        self.assertIn("//   SourceOneAO -> ReceiverOneAO", hpp)
+        self.assertIn("//   SourceTwoAO -> ReceiverTwoAO", hpp)
 
     def test_duplicate_signal_in_same_flow_is_rejected(self):
         source = """\

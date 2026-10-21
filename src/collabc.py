@@ -104,10 +104,7 @@ def parse_model(path: Path) -> Model:
 
     seen_aos = set()
     seen_pairs = set()
-    # Signal identity is receiver-centric. The same semantic signal may arrive
-    # at one receiver over multiple routes, but reusing the same name for a
-    # different receiver is rejected (ADR-0003).
-    seen_signals = {}  # signal -> (receiver, first_line)
+    # Signal identity is global; each flow separately rejects duplicate entries.
 
     lines = path.read_text(encoding="utf-8").splitlines()
 
@@ -141,7 +138,7 @@ def parse_model(path: Path) -> Model:
                 model.title = " ".join(parts[1:])
                 continue
 
-            if stripped.startswith(("ao ", "isr ", "external ", "timer ")):
+            if stripped.startswith(("ao ", "hsm ", "isr ", "external ", "timer ")):
                 if stripped.startswith("timer "):
                     try:
                         parts = shlex.split(stripped)
@@ -162,7 +159,7 @@ def parse_model(path: Path) -> Model:
                     continue
                 parts = stripped.split()
                 if len(parts) != 2:
-                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>', 'isr <Name>' or 'external <Name>'")
+                    raise ModelError(f"{path}:{idx}: expected 'ao <Name>', 'hsm <Name>', 'isr <Name>' or 'external <Name>'")
                 role = parts[0].upper()
                 name = parts[1]
                 if not AO_RE.match(name):
@@ -268,18 +265,6 @@ def parse_model(path: Path) -> Model:
                 f"{current_flow.sender}->{current_flow.receiver}"
             )
 
-        if signal in seen_signals:
-            receiver, first_line = seen_signals[signal]
-            if receiver != current_flow.receiver:
-                raise ModelError(
-                    f"{path}:{idx}: signal '{signal}' is already defined "
-                    f"for receiver '{receiver}' at line {first_line}; "
-                    f"cannot also use it for receiver "
-                    f"'{current_flow.receiver}'"
-                )
-        else:
-            seen_signals[signal] = (current_flow.receiver, idx)
-
         current_flow.signals.append(signal)
 
         if signal in GENERIC_STATUS_SIGNALS:
@@ -316,53 +301,99 @@ def puml_arrow(collab: Collaboration) -> str:
 
 
 def generate_puml(model: Model, source_name: str) -> str:
+    """Render a compact collaboration diagram with local timer occurrences.
+
+    A timer remains one semantic participant, even when drawn beside multiple
+    recipients. Timer details live in the legend; directed non-timer links
+    need only their signal names. Bidirectional links name each receiver.
+    """
     out = [
         "@startuml",
         f"' GENERATED from {source_name}; do not edit by hand.",
+        "' Timer aliases are graphical occurrences of one logical participant.",
         f"title {model.title}",
-        "",
         "skinparam linetype polyline",
+        "skinparam shadowing false",
         "top to bottom direction",
-        "",
+        "skinparam usecase {",
+        "  BackgroundColor White",
+        "  BorderColor #666666",
+        "}",
     ]
 
-    for ao in model.aos:
-        if model.roles.get(ao) == "EXTERNAL":
-            out.append(f'actor "{ao}" as {ao}')
-        elif model.roles.get(ao) == "TIMER":
-            # Timers are event sources, not AOs. Keep their participant
-            # symbols compact; descriptive cadence belongs in a separate note.
-            out.append(f'component "{ao}" as {ao} <<Timer>>')
-            if ao in model.timer_cadences:
-                cadence = model.timer_cadences[ao].replace("\\n", " ").replace("\\r", " ")
-                # Escape PlantUML note markup and keep each description on one line.
-                cadence = cadence.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-                out.append(f"note right of {ao}")
-                out.append(f"  {cadence}")
-                out.append("end note")
+    timer_links = [c for c in model.collaborations
+                   if model.roles.get(c.a) == "TIMER"
+                   or model.roles.get(c.b) == "TIMER"]
+    ordinary_links = [c for c in model.collaborations if c not in timer_links]
+
+    # Declare participants in the same role-group order as the J experiment.
+    for name in model.aos:
+        if model.roles.get(name) == "EXTERNAL":
+            out.append(f'actor "{name}" as {name}')
+
+    timer_occurrences = []
+    timer_names = [name for name in model.aos if model.roles.get(name) == "TIMER"]
+    # Shared periodic timers first, then local one-shot timers.
+    timer_names.sort(key=lambda name: -sum(name in (c.a, c.b) for c in timer_links))
+    for name in timer_names:
+        links = [c for c in timer_links if name in (c.a, c.b)]
+        for c in links:
+            receiver = c.b if c.a == name else c.a
+            alias = f"{name}__{receiver}" if len(links) > 1 else name
+            label = f"<b>T</b>\\n<size:9>{name}:</size>"
+            out.append(f'usecase "{label}" as {alias}')
+            timer_occurrences.append((name, receiver, alias, c))
+
+    for name in model.aos:
+        role = model.roles.get(name, "AO")
+        if role in ("EXTERNAL", "TIMER"):
+            continue
+        label = f"<size:17><b>{name}</b></size>" if role == "AO" else name
+        out.append(f'component "{label}" as {name} <<{role}>>')
+
+    if timer_occurrences:
+        out.extend(["", "legend bottom", "  |= Timer |= Behaviour |= Signal posted |"])
+        seen = set()
+        for name, _receiver, _alias, c in timer_occurrences:
+            if name in seen:
+                continue
+            seen.add(name)
+            cadence = (model.timer_cadences.get(name, "")
+                       .replace("&", "&amp;")
+                       .replace("<", "&lt;")
+                       .replace(">", "&gt;"))
+            signals = list(dict.fromkeys(sig for link in timer_links
+                                          if name in (link.a, link.b)
+                                          for flow in link.flows
+                                          if flow.sender == name
+                                          for sig in flow.signals))
+            out.append(f"  | <b>T</b> {name} | {cadence} | {', '.join(signals)} |")
+        out.append("endlegend")
+
+    out.append("")
+    for name, receiver, alias, c in timer_occurrences:
+        flow = c.flows[0]
+        if flow.sender == name:
+            out.append(f"{alias} -right-> {receiver}")
         else:
-            label = f"<size:17><b>{ao}</b></size>" if model.roles.get(ao, "AO") == "AO" else ao
-            out.append(f'component "{label}" as {ao} <<{model.roles.get(ao, "AO")}>>')
+            out.append(f"{receiver} -left-> {alias}")
 
     out.append("")
-
-    for collab in model.collaborations:
-        arrow = puml_arrow(collab)
-        out.append(f"{collab.a} {arrow} {collab.b}")
+    for collab in ordinary_links:
+        out.append(f"{collab.a} {puml_arrow(collab)} {collab.b}")
         out.append("note on link")
-        for n, flow in enumerate(collab.flows):
-            if n:
-                out.append("")
-            out.append(f"  {flow.sender} -> {flow.receiver}")
-            for sig in flow.signals:
-                out.append(f"    {sig}")
+        if len(collab.flows) == 1:
+            for signal in collab.flows[0].signals:
+                out.append(f"  {signal}")
+        else:
+            for flow in collab.flows:
+                out.append(f"  <b>-> {flow.receiver}</b>")
+                for signal in flow.signals:
+                    out.append(f"    {signal}")
         out.append("end note")
-        out.append("")
 
-    out.append("@enduml")
-    out.append("")
+    out.extend(["@enduml", ""])
     return "\n".join(out)
-
 
 def all_signals(model: Model):
     for collab in model.collaborations:
@@ -447,11 +478,8 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
         for node in root.iter("class")
         if node.get("name")
     }
-    signals = set()
-    for attr in root.iter("attribute"):
-        if attr.get("name") == "AppSignals":
-            source = attr.findtext("code") or ""
-            signals.update(re.findall(r"\b([A-Z][A-Z0-9_]*_SIG)\b", source))
+    from qm_signals import declared_signals
+    signals = declared_signals(root)
 
     failures = 0
     unknown = 0
@@ -473,7 +501,7 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
             qm_signal = signal + "_SIG"
             if qm_signal not in signals:
                 print(f"MISSING: {sender}->{receiver} {signal}: "
-                      f"{qm_signal} not declared in QM AppSignals")
+                      f"{qm_signal} not found in supported QM signal declarations")
                 failures += 1
                 continue
             receiver_class = classes[mapped_receiver]
@@ -501,7 +529,7 @@ def inspect_qm(model: Model, qm_path: Path, aliases: dict[str, str]) -> tuple[in
         qm_signal = signal + "_SIG"
         if qm_signal not in signals:
             print(f"MISSING: {sender}->{receiver} {signal}: "
-                  f"{qm_signal} not declared in QM AppSignals")
+                  f"{qm_signal} not found in supported QM signal declarations")
             failures += 1
             continue
         receiver_class = classes[mapped_receiver]

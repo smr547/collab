@@ -1,0 +1,98 @@
+collab 1
+title "Fly N Shoot Collaboration example"
+
+external Player
+timer TickTimer "repeat; 30ms"
+timer BlinkTimer "one-shot; 5s"
+timer ScreenTimer "one-shot; 5s"
+ao    Ship
+ao    Missile
+ao    Tunnel
+hsm   Mine
+
+
+collaboration BlinkTimer Tunnel
+  BlinkTimer -> Tunnel
+      BLINK_TIMEOUT
+end
+
+collaboration ScreenTimer Tunnel
+  ScreenTimer -> Tunnel
+      SCREEN_TIMEOUT
+end
+
+
+collaboration Player Tunnel
+  Player -> Tunnel
+    PLAYER_TRIGGER
+    PLAYER_QUIT
+end
+
+collaboration Player Ship
+  Player -> Ship
+    PLAYER_SHIP_MOVE
+    PLAYER_TRIGGER
+end
+
+collaboration TickTimer Ship
+  TickTimer -> Ship
+    TIME_TICK
+end
+
+collaboration TickTimer Missile
+  TickTimer -> Missile
+    TIME_TICK
+end
+
+collaboration TickTimer Tunnel
+  TickTimer -> Tunnel
+    TIME_TICK
+end
+
+collaboration Ship Missile
+  Ship -> Missile
+    MISSILE_FIRE  # A missile is launched from the ship's current (x, y) position
+  Missile -> Ship
+    DESTROYED_MINE  # The missile tells the ship it has it has a Mine
+end
+
+collaboration Ship Tunnel
+  Ship -> Tunnel
+    SHIP_IMG      # the Ship provides an image of itself to the Tunnel which paints it into the frame buffer
+    SCORE         # from Ship to Tunnel to display the score
+    EXPLOSION     # tell the Tunnel to render the explosion
+    GAME_OVER     # published by Ship when it finishes exploding
+  Tunnel -> Ship
+    HIT_WALL       # The Tunnel tells the ship it has it has hit the Tunnel
+    TAKE_OFF       # from Tunnel to Ship to grant permission to take off
+end
+
+collaboration Missile Tunnel
+  Missile -> Tunnel
+    MISSILE_IMG   # the Missile provides an image of itself to the Tunnel which paints it into the frame buffer
+    EXPLOSION     # tell the Tunnel to render the explosion
+end
+
+collaboration Tunnel Mine
+  Tunnel -> Mine
+    TIME_TICK      # the TIME_TICK is forwarded to each Mine by the Tunnel
+    SHIP_IMG       # each Mine determines whether it is in collision with the Ship
+    MISSILE_IMG    # each Mine determines whether it is in collision with the Missile
+    MINE_PLANT     # from Tunnel to the Mine to plant it
+    MINE_RECYCLE   # sent by Tunnel to Mine to recycle the mine
+
+  Mine -> Tunnel
+    MINE_IMG       # Each Mine provides an image of itself to the Tunnel which paints it into the frame buffer
+    MINE_DISABLED  # from Mine to Tunnel when it becomes disabled
+    EXPLOSION      # tell the Tunnel to render the explosion
+end
+
+collaboration Mine Missile
+  Mine -> Missile
+    HIT_MINE       # If a Mine detects it's been hit by a Missile it informs the Missile and provides a score dependent on mine type
+end
+
+collaboration Mine Ship
+  Mine -> Ship
+    HIT_MINE       # If a Mine detects it's hit by the Ship it informs the Ship
+end
